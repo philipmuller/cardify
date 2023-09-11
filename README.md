@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Before running the dev server, you should update the keychain file with your OpenAI API key. To do so, create an account at https://openai.com/blog/openai-api to get an API key. Once generated, open the `keychain.ts` file and edit the following line with your API key:
+
+```ts
+export const openAIKey = "YOUR OPENAI KEY HERE";
+```
+
 First, run the development server:
 
 ```bash
