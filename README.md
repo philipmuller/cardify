@@ -8,7 +8,7 @@ Before running the dev server, you should update the keychain file with your Ope
 export const openAIKey = "YOUR OPENAI KEY HERE";
 ```
 
-First, run the development server:
+Next, run the development server:
 
 ```bash
 npm run dev
