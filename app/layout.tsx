@@ -1,8 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Cardify demonstrator",
@@ -16,7 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${hk.className} flex flex-col h-screen bg-gradient-to-b from-stone-100 to-stone-100`}>
+        <nav className="flex justify-between items-center p-4 bg-transparent">
+          <span className="text-2xl font-semibold text-gray-800">Cardybee</span>
+          <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded">Log In</button>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }
