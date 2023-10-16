@@ -64,8 +64,8 @@ async function getDeck(inputText: string) {
   return { cards };
 }
 
-export default async function Deck({ params }: { params: { input: string } }) {
-  const input = params.input;
+export default async function Deck({ searchParams }: { searchParams: {fileText: string} }) {
+  const input = searchParams.fileText;
   console.log(input);
   const deck = await getDeck(input);
   return (
