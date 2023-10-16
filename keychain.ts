@@ -1,3 +1,3 @@
 //This file contains sensitive information and should not be committed to git.
 
-export const openAIKey = "YOUR OPENAI KEY HERE";
+export const openAIKey = "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";
