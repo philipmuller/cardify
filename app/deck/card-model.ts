@@ -26,7 +26,7 @@ export class DeckCreatorService {
             choices: [
               {
                 message: {
-                  content: "Title: This is a test title\nQ: This is the first question\nA: This is the first answer\nQ: This is the second question\nA: This is the second answer\nQ: This is the third question\nA: This is the third answer\nQ: This is the fourth question\nA: This is the fourth answer\nQ: This is the fifth question\nA: This is the fifth answer"
+                  content: "Title: This is a test title\nQ: This is the first question\nA: This is the first answer\nQ: This is the second question\nA: This is the second answer\nQ: This is the third question\nA: This is the third answer\nQ: This is the fourth question\nA: This is the fourth answer\nQ: This is the fifth question\nA: This is the fifth answer\nQ: This is the sixth question\nA: This is the sixth answer\nQ: This is the seventh question\nA: This is the seventh answer\nQ: This is the eigth question\nA: This is the eighth answer"
                 }
               }
             ],

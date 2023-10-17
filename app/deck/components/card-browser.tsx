@@ -9,41 +9,59 @@ import CardComponent from "./card-component";
 export default function CardBrowser({ cards }: { cards: Card[]}) {
   
     const [currentIdx, setCurrentIdx] = useState(0);
+    const carouselItemSize = 3;
 
     function calculateZ(idx: number) { return 10 - Math.abs(currentIdx - idx) }
     function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/10) }
+    function calculateRotation(idx: number) { return 0 - ((currentIdx - idx)*20) }
 
-    function forward() {
+    function next() {
         if (currentIdx < cards.length - 1) {
             setCurrentIdx(currentIdx + 1);
         }
     }
 
-    function back() {
+    function prev() {
         if (currentIdx > 0) {
             setCurrentIdx(currentIdx - 1);
         }
     }
 
+    function limitAdjustments() {
+        let unit = 100;
+        var value = carouselItemSize;
+        if (currentIdx < carouselItemSize) {
+            value = currentIdx;
+        } else if (currentIdx > cards.length - 1 - carouselItemSize) {
+            value = 2*carouselItemSize + currentIdx - (cards.length - 1);
+        }
+
+        //console.log(value);
+        return (carouselItemSize - value) * unit;
+    }
+
     return (
     <>
-        <div className="flex -space-x-32">
+        <motion.div className="flex content-center justify-center justify-items-center -space-x-32"
+        whileInView={{x: limitAdjustments()}}>
             {cards.map((card, idx) => {
-            if (idx <= 3)
+            if (idx <= currentIdx + carouselItemSize && idx >= currentIdx - carouselItemSize)
                 return (
                 <motion.div
+                layout
                 key={idx}
-                whileInView={{ zIndex: calculateZ(idx), scale: calculateScale(idx)}}
-                transition={{ type: "spring", stiffness: 100, damping: 10, duration: 0.1}}>
+                initial={{ opacity: 0 }}
+                whileInView={{ zIndex: calculateZ(idx), opacity: (idx == currentIdx+carouselItemSize || idx == currentIdx-carouselItemSize) ? 0 : 1, scale: calculateScale(idx)}}
+                transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.1}}>
                     <CardComponent card={card}/>
                 </motion.div>
                 );
             })}
-        </div>
+        </motion.div>
         <div className="flex flex-row">
-            <button onClick={back}><ArrowLeft size={32} color="#57534e"/></button>
+            <button onClick={prev}><ArrowLeft size={32} color="#57534e"/></button>
             <p className="text-stone-500">{currentIdx+1}/{cards.length}</p>
-            <button onClick={forward}><ArrowRight size={32} color="#57534e"/></button>
+            <button onClick={next}><ArrowRight size={32} color="#57534e"/></button>
         </div>
     </>
     );
