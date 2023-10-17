@@ -19,7 +19,7 @@ export default function CardComponent({ card }: { card: Card}) {
 
     return (
         <motion.div
-        className={`bg-gradient-to-r from-white to-orange-50 bg-cover rounded-5xl w-100 h-130 text-black flip-card-inner drop-shadow-2xl p-4`}
+        className={`bg-stone-50 rounded-5xl w-100 h-130 text-stone-800 text-xl flip-card-inner drop-shadow-2xl p-12`}
         initial={false}
         animate={{rotateY: isFlipped ? 180 : 360}}
         //whileTap={{ scale: 0.9, rotateY: 90, }}
