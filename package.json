@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.0.13",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.475",
     "@types/node": "20.5.9",

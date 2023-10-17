@@ -5,13 +5,15 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, motionValue } from "framer-motion";
 import ConvertApi from "convertapi-js";
 import { convertAPISecret } from "@/keychain";
-import { useRouter, useSearchParams} from 'next/navigation'
+import { useRouter, useSearchParams} from 'next/navigation';
+import { ArrowSquareDown, Command } from "@phosphor-icons/react";
 
 
 export default function Home() {
   const [cardNr, setCardNr] = useState(3);
   const [coords, setCoords] = useState({x: 0, y: 0});
   const [isHoveringFile, setIsHoveringFile] = useState(false);
+  const [isPressingCommand, setIsPressingCommand] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams()!;
@@ -32,15 +34,44 @@ export default function Home() {
         y: -distY,
       });
     };
+
+    const handleKeyDown = async (event: { key: string; }) => {
+
+      if (event.key == "Meta" || event.key == "Control") {
+        setIsPressingCommand(true);
+      }
+
+      if (event.key == "v" && isPressingCommand == true) {
+
+        try {
+          const text = await navigator.clipboard.readText();
+          console.log('Clipboard data read successfully.');
+          router.push("/deck" + '?' + createQueryString("fileText", text));
+        } catch (err) {
+          console.log('Failed to read clipboard data.');
+        }
+      }
+
+    }
+
+    const handleKeyUp = (event: { key: string; }) => {
+      console.log(event.key);
+      if (event.key == "Meta" || event.key == "Control") {
+        setIsPressingCommand(false);
+      }
+
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
     window.addEventListener('mousemove', handleWindowMouseMove);
 
     return () => {
-      window.removeEventListener(
-        'mousemove',
-        handleWindowMouseMove,
-      );
+      window.removeEventListener('mousemove', handleWindowMouseMove);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
     };
-  }, []);
+  }, [isPressingCommand]);
 
   function calculateRotation(idx: number): number {
     const rotation = (idx - 1) * 20;
@@ -145,22 +176,39 @@ export default function Home() {
         //onChange={handleChange}
         accept=".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx,.txt,.pdf"
       />
-      <motion.div initial={{ visibility: "hidden" }} whileInView={{ visibility: isHoveringFile ? "visible" : "hidden" }}><h1 className="text-3xl text-slate-600">Drop file to create cards</h1></motion.div>
       <div className="flex -space-x-32">
         {Array.from({ length: cardNr }).map((_, idx) => (
           <motion.div 
           key={idx}
           className={`bg-gradient-to-r from-white ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
           initial={{ y: offsetsY[idx], z: idx }}
-          whileInView={{ y: isHoveringFile ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(10+(20*idx))), x: isHoveringFile ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(10+(20*idx))), z: idx}}
+          whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), z: idx}}
           whileHover={{ scale: 1.07}}
-          transition={{ type: "spring", stiffness: isHoveringFile ? 100 : 50, damping: isHoveringFile ? 10 : 20, duration: isHoveringFile ? 0.1 : 1.0}}
+          transition={{ type: "spring", stiffness: isHoveringFile || isPressingCommand ? 100 : 50, damping: isHoveringFile || isPressingCommand ? 10 : 20, duration: isHoveringFile || isPressingCommand ? 0.1 : 1.0}}
           />
         ))}
       </div>
-      <div className="flex flex-row">
-        <p className="mt-60 text-lg text-gray-700">Coords {coords.x} {coords.y}</p>
-        <button onClick={() => setCardNr(cardNr+1)}>Click me</button>
+      <div className="grid grid-cols-2 gap-4 mt-28 -z-30">
+
+        <motion.div layout className="flex flex-col items-center p-8"
+        whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 90 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isPressingCommand ? 0 : 1}}
+        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
+
+          <ArrowSquareDown color="#a8a29e" size={48}/>
+          <p className="text-lg text-stone-500">Drop any file</p>
+
+        </motion.div>
+
+        <motion.div layout className="flex flex-col items-center p-8" 
+        whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -90 : 0, scale: isPressingCommand ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
+        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
+          <div className="flex flex-row items-center ">
+            <Command color="#a8a29e" size={48} />
+            <h1 className={`text-4xl text-stone-400 ${isPressingCommand ? "opacity-40" : "opacity-100"}`}>V</h1>
+          </div>
+          <p className="text-lg text-stone-500">Paste any text</p>
+        </motion.div>
+
       </div>
     </form>
   );
