@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Card, Deck, DeckCreatorService } from "../card-model";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import CardComponent from "./card-component";
 
 export default function CardBrowser({ cards }: { cards: Card[]}) {
   
@@ -32,11 +33,9 @@ export default function CardBrowser({ cards }: { cards: Card[]}) {
                 return (
                 <motion.div
                 key={idx}
-                className={`bg-gradient-to-r from-white to-orange-50 bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
                 whileInView={{ zIndex: calculateZ(idx), scale: calculateScale(idx)}}
                 transition={{ type: "spring", stiffness: 100, damping: 10, duration: 0.1}}>
-                    {card.front}
-                    {card.back}
+                    <CardComponent card={card}/>
                 </motion.div>
                 );
             })}
