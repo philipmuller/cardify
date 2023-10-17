@@ -88,7 +88,6 @@ export default async function Deck({ searchParams }: { searchParams: { fileText:
 
   const [cardNr, setCardNr] = useState(1);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [isHoveringFile, setIsHoveringFile] = useState(false);
 
   useEffect(() => {
     const handleWindowMouseMove = (event: { clientX: any; clientY: any; }) => {
@@ -126,55 +125,27 @@ export default async function Deck({ searchParams }: { searchParams: { fileText:
         {deck.deck.title}
       </div>
 
-      {/* <div className="flex -space-x-32">
-        {Array.from({ length: 4 }).map((_, idx) => (
-          <motion.div
-            key={idx}
-            className={`bg-gradient-to-r from-white to-orange-50 bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
-            content="aaaa"
-            initial={{ y: offsetsY[idx], z: idx }}
-            whileInView={{ y: isHoveringFile ? fileOffsetsY[idx] : offsetsY[idx] + (coords.y / (10 + (20 * idx))), x: isHoveringFile ? fileOffsetsX[idx] : offsetsX[idx] + (coords.x / (10 + (20 * idx))), z: idx }}
-            whileHover={{ scale: 1.07 }}
-            transition={{ type: "spring", stiffness: isHoveringFile ? 100 : 50, damping: isHoveringFile ? 10 : 20, duration: isHoveringFile ? 0.1 : 1.0 }}
-          />
-        ))}
-      </div> */}
-
       <div className="flex -space-x-32">
         {deck.deck.cards.map((card, idx) => {
           if (idx == cardNr || idx == cardNr + 1 || idx == cardNr + 2 || idx == cardNr + 3)
             return (
               <motion.div
-
                 key={idx}
                 className={`bg-gradient-to-r from-white to-orange-50 bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
                 initial={{ y: offsetsY[idx], z: idx }}
-                whileInView={{ y: isHoveringFile ? fileOffsetsY[idx] : offsetsY[idx] + (coords.y / (10 + (20 * idx))), x: isHoveringFile ? fileOffsetsX[idx] : offsetsX[idx] + (coords.x / (10 + (20 * idx))), z: idx }}
-                whileHover={{ scale: 1.07 }}
-                transition={{ type: "spring", stiffness: isHoveringFile ? 100 : 50, damping: isHoveringFile ? 10 : 20, duration: isHoveringFile ? 0.1 : 1.0 }}
               >
                 {card.front}
                 {card.back}
               </motion.div>
-
-              // <div key={i} className="flex flex-col items-center justify-between">
-              //   <div className="bg-gray-800 text-white px-4 py-2 rounded-lg">
-              //     {card.front}
-              //   </div>
-              //   <div className="bg-gray-800 text-white px-4 py-2 rounded-lg">
-              //     {card.back}
-              //   </div>
-              // </div>
             );
         }, [])}
       </div>
 
-      
-        <button onClick={() => console.log("aaa")}><FaArrowLeft/></button>
-        {cardNr}
-        /
-        {deck.deck.cards.length}
-        <button onClick={() => setCardNr(cardNr + 1)}><FaArrowRight/></button>
+      <button><FaArrowLeft /></button>
+      {cardNr}
+      /
+      {deck.deck.cards.length}
+      <button><FaArrowRight /></button>
 
     </main>
   );
