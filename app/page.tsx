@@ -183,7 +183,7 @@ export default function Home() {
           className={`bg-gradient-to-r from-white ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
           initial={{ y: offsetsY[idx], z: idx }}
           whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), z: idx}}
-          whileHover={{ scale: 1.07}}
+          whileHover={{ scale: 1.07 }}
           transition={{ type: "spring", stiffness: isHoveringFile || isPressingCommand ? 100 : 50, damping: isHoveringFile || isPressingCommand ? 10 : 20, duration: isHoveringFile || isPressingCommand ? 0.1 : 1.0}}
           />
         ))}
