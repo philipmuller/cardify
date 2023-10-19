@@ -1,15 +1,25 @@
 "use client"
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Card, Deck, DeckCreatorService } from "../card-model";
+import { useState, useEffect } from "react";
+import { Card } from "../card-model";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import CardComponent from "./card-component";
 
-export default function CardBrowser({ cards }: { cards: Card[]}) {
+export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMode?: boolean}) {
   
     const [currentIdx, setCurrentIdx] = useState(0);
     const carouselItemSize = 3;
+
+    useEffect(() => {
+        if (liveMode) {
+            for (let i = currentIdx; i < cards.length; i++) {
+                setTimeout(() => {
+                    move(i);
+                }, 500+(500*(i-currentIdx)));
+            }
+        }
+    }, [cards]);
 
     function calculateZ(idx: number) { return 10 - Math.abs(currentIdx - idx) }
     function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/10) }
@@ -24,6 +34,12 @@ export default function CardBrowser({ cards }: { cards: Card[]}) {
     function prev() {
         if (currentIdx > 0) {
             setCurrentIdx(currentIdx - 1);
+        }
+    }
+
+    function move(idx: number) {
+        if (idx >= 0 && idx < cards.length) {
+            setCurrentIdx(idx);
         }
     }
 
@@ -50,8 +66,9 @@ export default function CardBrowser({ cards }: { cards: Card[]}) {
                 <motion.div
                 layout
                 key={idx}
-                initial={{ opacity: 0 }}
-                whileInView={{ zIndex: calculateZ(idx), opacity: (idx == currentIdx+carouselItemSize || idx == currentIdx-carouselItemSize) ? 0 : 1, scale: calculateScale(idx)}}
+                initial={{ opacity: 0, y: -800 }}
+                exit={{ opacity: 0, y: -800 }}
+                animate={{ y: 0, zIndex: calculateZ(idx), opacity: (idx == currentIdx+carouselItemSize || idx == currentIdx-carouselItemSize) ? 0 : 1, scale: calculateScale(idx)}}
                 transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.1}}>
                     <CardComponent card={card}/>
                 </motion.div>
