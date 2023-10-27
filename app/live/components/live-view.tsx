@@ -15,7 +15,7 @@ export default function LiveView() {
 
     const mediaRecorder = useRef<MediaRecorder | null>(null);
 
-    const MINUTE_MS = 2*60000;
+    const MINUTE_MS = 30000;
 
     useEffect(() => {
         console.log('Running effect');

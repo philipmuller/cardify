@@ -44,7 +44,7 @@ class DeckCreatorService {
     Do not describe what you are doing or understanding, just output the lines following the described formatting.`;
 
 
-    static devMode = false;
+    static devMode = true;
 
     private static async getRawData(inputText: string, liveMode: boolean) {
 

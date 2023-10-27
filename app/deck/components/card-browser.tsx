@@ -22,8 +22,10 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     }, [cards]);
 
     function calculateZ(idx: number) { return 10 - Math.abs(currentIdx - idx) }
-    function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/10) }
-    function calculateRotation(idx: number) { return 0 - ((currentIdx - idx)*20) }
+    function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/20) }
+    function calculateOpacity(idx: number) { return (idx == currentIdx+carouselItemSize || idx == currentIdx-carouselItemSize) ? 0 : 1}
+    function calculateCardFade(idx: number) { return 1 - (Math.abs(currentIdx - idx)/3) }
+    function calculateOffset(idx: number) { return Math.exp((Math.abs(currentIdx-idx))/2.2)*20*(currentIdx - idx) }
 
     function next() {
         if (currentIdx < cards.length - 1) {
@@ -68,9 +70,9 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
                 key={idx}
                 initial={{ opacity: 0, y: -800 }}
                 exit={{ opacity: 0, y: -800 }}
-                animate={{ y: 0, zIndex: calculateZ(idx), opacity: (idx == currentIdx+carouselItemSize || idx == currentIdx-carouselItemSize) ? 0 : 1, scale: calculateScale(idx)}}
+                animate={{ y: 0, x: calculateOffset(idx), zIndex: calculateZ(idx), opacity: calculateOpacity(idx), scale: calculateScale(idx)}}
                 transition={{ type: "spring", stiffness: 100, damping: 20, duration: 0.1}}>
-                    <CardComponent card={card}/>
+                    <CardComponent card={card} fade={calculateCardFade(idx)}/>
                 </motion.div>
                 );
             })}
