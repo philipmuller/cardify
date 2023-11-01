@@ -6,7 +6,7 @@ import { motion, motionValue } from "framer-motion";
 import ConvertApi from "convertapi-js";
 import { convertAPISecret } from "@/keychain";
 import { useRouter, useSearchParams} from 'next/navigation';
-import { ArrowSquareDown, Command } from "@phosphor-icons/react";
+import { ArrowSquareDown, Command, Record } from "@phosphor-icons/react";
 
 
 export default function Home() {
@@ -165,6 +165,8 @@ export default function Home() {
     }
   }
 
+  
+
   return (
     <form className="flex-grow flex flex-col items-center justify-center" onDragEnter={handleDragEnter} onDragLeave={handleDragExit} onDrop={handleDrop} onDragOver={handleDragOver}>
       <input
@@ -180,35 +182,46 @@ export default function Home() {
         {Array.from({ length: cardNr }).map((_, idx) => (
           <motion.div 
           key={idx}
-          className={`bg-gradient-to-r from-white ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4`}
-          initial={{ y: offsetsY[idx], z: idx }}
-          whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), z: idx}}
+          className={`bg-gradient-to-r from-white ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4 `}
+          initial={{ y: offsetsY[idx], zIndex: idx+50 }}
+          whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), zIndex: idx+50}}
           whileHover={{ scale: 1.07 }}
           transition={{ type: "spring", stiffness: isHoveringFile || isPressingCommand ? 100 : 50, damping: isHoveringFile || isPressingCommand ? 10 : 20, duration: isHoveringFile || isPressingCommand ? 0.1 : 1.0}}
           />
         ))}
       </div>
-      <div className="grid grid-cols-2 gap-4 mt-28 -z-30">
+      <div className="grid grid-cols-3 gap-4 mt-28 ">
 
-        <motion.div layout className="flex flex-col items-center p-8"
-        whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 90 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isPressingCommand ? 0 : 1}}
+        <motion.div layout className="flex flex-col items-center p-8 -z-10"
+        whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 290 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isPressingCommand ? 0 : 1}}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-
-          <ArrowSquareDown color="#a8a29e" size={48}/>
+          <ArrowSquareDown color="#a8a29e" size={48} className="mt-1 mb-1.5"/>
           <p className="text-lg text-stone-500">Drop any file</p>
 
         </motion.div>
 
-        <motion.div layout className="flex flex-col items-center p-8" 
-        whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -90 : 0, scale: isPressingCommand ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
+        <motion.div layout className="flex flex-col items-center p-8 -z-5" 
+        whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -10 : 0, scale: isPressingCommand ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-          <div className="flex flex-row items-center ">
+          <div className="flex flex-row items-center">
             <Command color="#a8a29e" size={48} />
             <h1 className={`text-4xl text-stone-400 ${isPressingCommand ? "opacity-40" : "opacity-100"}`}>V</h1>
           </div>
           <p className="text-lg text-stone-500">Paste any text</p>
         </motion.div>
-
+        
+        <motion.div layout className="flex flex-col items-center p-8 hover:bg-blue z-5" 
+        whileInView={{ opacity: isPressingCommand || isHoveringFile ? 0 : 1}}
+        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
+          <Link href="/live" className="text-4xl text-stone-400 flex flex-row items-center">
+              <Record size={28} color="#a8a29e" weight="fill"/>
+              Live
+          </Link>
+          <p className="text-lg text-stone-500">Record any lecture</p>
+        </motion.div>
+        
+        
+        
       </div>
     </form>
   );
