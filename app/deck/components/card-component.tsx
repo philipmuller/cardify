@@ -1,39 +1,78 @@
 "use client"
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { Card } from "../card-model";
 import { useState } from "react";
 
-export default function CardComponent({ card, fade }: { card: Card, fade: number}) {
+export default function CardComponent({ card, fade, expanded }: { card: Card, fade: number, expanded: boolean }) {
 
     const [isFlipped, setIsFlipped] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
     function handleFlip() {
-        if(!isAnimating) {
+        //if(!isAnimating) {
             setIsFlipped(!isFlipped);
             setIsAnimating(true);
-        }
+        //}
        
     }
 
+    const cardAnimationStates: Variants = {
+        regular: {
+          opacity: 1,
+          rotateY: isFlipped ? 180 : 0, 
+          width: "20rem", 
+          minHeight: "28rem",
+          maxHeight: "28rem",
+        },
+        expanded: {
+          opacity: 1,
+          rotateY: isFlipped ? 180 : 0, 
+          width: "50rem", 
+          minHeight: "50rem",
+          maxHeight: "1000rem",
+        },
+        offscreen: {
+          opacity: 0,
+          width: "20rem", 
+          height: "28rem",
+        },
+    }
+
+    function frontOrBack() {
+      if (isFlipped) {
+        return <motion.p className={`scale-y-[-1] rotate-180 ${expanded ? "" : "line-clamp-[11]"}`} animate={{ opacity: fade }}>{card.back}</motion.p>
+      } else {
+        return <motion.p className={expanded ? "" : "line-clamp-[11]"} animate={{ opacity: fade }}>{card.front}</motion.p>
+      }
+    }
+
     return (
+      <>
         <motion.div
-        className={`bg-white rounded-5xl w-100 h-130 text-stone-700 font-normal text-xl flip-card-inner shadow-[0_4px_43px_32px_rgba(206,206,206,0.25)] p-12`}
+        className={`bg-white rounded-5xl text-stone-700 font-normal flex text-xl overflow-hidden flip-card-inner shadow-[0_4px_43px_32px_rgba(206,206,206,0.25)] p-12`}
+        variants={cardAnimationStates}
         initial={false}
-        animate={{rotateY: isFlipped ? 180 : 360}}
-        //whileTap={{ scale: 0.9, rotateY: 90, }}
-        //onTap={changeIsFlipped}
-        transition={{ type: "spring", stiffness: 100, damping: 10, duration: 0.08}}
+        animate={expanded ? "expanded" : "regular"}
+        layout
         onClick={handleFlip}
         onAnimationComplete={()=>setIsAnimating(false)}
+        // transition={{ 
+        //   type: "spring", 
+        //   stiffness: 100, 
+        //   damping: 12, 
+        //   duration: 0.3 
+        // }}
+        transition={{ 
+          type: "spring",
+          damping: 20,  
+          duration: 0.2
+        }}
         >
-        {isFlipped ? (
-            <motion.p className="scale-y-[-1] rotate-180" animate={{ opacity: fade }}>{card.back}</motion.p>)
-            :
-            (<motion.p animate={{ opacity: fade }}>{card.front}</motion.p>)
-        }
+          {frontOrBack()}
         </motion.div>
+      </>
+
     );
 
 }

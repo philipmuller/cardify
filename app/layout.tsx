@@ -17,8 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${hk.className} flex flex-col h-screen bg-gradient-to-b from-stone-100 to-stone-100`}>
-        <nav className="flex justify-between items-center p-4 bg-transparent">
+      <body className={`${hk.className} flex flex-col h-screen bg-gradient-to-b from-stone-100 to-stone-100 overflow-x-hidden`}>
+        <nav className="flex justify-between items-center p-4 bg-transparent fixed w-screen">
           <span className="text-2xl font-semibold text-gray-800">
             <Link href={{pathname: "/"}}>Cardybee</Link>
             </span>
