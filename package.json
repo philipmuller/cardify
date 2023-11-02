@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.8.1",
     "@phosphor-icons/react": "^2.0.13",
     "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^0.9.475",

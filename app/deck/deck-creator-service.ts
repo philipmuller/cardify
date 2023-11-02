@@ -1,9 +1,10 @@
 "use server"
 
 import { Deck, Card } from "./card-model";
-import { openAIKey } from "@/keychain";
+import { anthropicKey, openAIKey } from "@/keychain";
 import OpenAI from "openai";
 import { exec } from 'child_process';
+import Anthropic from '@anthropic-ai/sdk';
 
 const fs = require('fs');
 const util = require('util');
@@ -16,7 +17,14 @@ export async function getDeck(text: string, isAudioFile: boolean): Promise<Deck>
     return result;
 }
 
+enum AiEngineType {
+    OpenAI,
+    Anthropic
+}
+
 class DeckCreatorService {
+    static devMode = true;
+    static aiEngine: AiEngineType = AiEngineType.Anthropic;
 
     static textSystemPrompt = `
     You are a flashcard generator. 
@@ -43,14 +51,10 @@ class DeckCreatorService {
     \n Do not include any text other than a title and a sequence of Q and A strings on separated lines. 
     Do not describe what you are doing or understanding, just output the lines following the described formatting.`;
 
-
-    static devMode = true;
-
     private static async getRawData(inputText: string, liveMode: boolean) {
 
-        console.log("GET RAW DATA RUN");
-
         const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
+        const anthropic = new Anthropic({ apiKey: anthropicKey });
           
         if (DeckCreatorService.devMode) {
           return {
@@ -83,19 +87,28 @@ class DeckCreatorService {
           }
       
         } else {
-          return await openai.chat.completions.create({
-            messages: [
-              {
-                role: "system",
-                content: liveMode ? DeckCreatorService.audioSystemPrompt : DeckCreatorService.textSystemPrompt,
-              },
-              {
-                role: "user",
-                content: "" + inputText,
-              },
-            ],
-            model: "gpt-3.5-turbo",
-          });
+          if (this.aiEngine == AiEngineType.Anthropic) {
+            return await anthropic.completions.create({
+              model: 'claude-instant-1',
+              max_tokens_to_sample: 80000,
+              prompt: `${Anthropic.HUMAN_PROMPT} ${liveMode ? this.audioSystemPrompt : this.textSystemPrompt} \n ${"" + inputText} \n ${Anthropic.AI_PROMPT}`,
+            });
+
+          } else {
+            return await openai.chat.completions.create({
+              messages: [
+                {
+                  role: "system",
+                  content: liveMode ? DeckCreatorService.audioSystemPrompt : DeckCreatorService.textSystemPrompt,
+                },
+                {
+                  role: "user",
+                  content: "" + inputText,
+                },
+              ],
+              model: "gpt-3.5-turbo",
+            });
+          }
         }
       }
 
@@ -171,7 +184,16 @@ class DeckCreatorService {
             inputText = await DeckCreatorService.getTranscription(text);
         }
         const rawData = await DeckCreatorService.getRawData(inputText, isAudioFile);
-        const rawString = rawData.choices[0].message.content ?? "";
+
+        var rawString = "";
+
+        if (AiEngineType.Anthropic) {
+          const anthropicRawData = rawData as Anthropic.Completions.Completion;
+          rawString = anthropicRawData.completion ?? "";
+        } else {
+          const openAIrawData = rawData as OpenAI.Chat.Completions.ChatCompletion;
+          rawString = openAIrawData.choices[0].message.content ?? "";
+        }
         //console.log(rawString);
     
         let title: string = "";
