@@ -200,25 +200,29 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
 
     }
 
-    return (
-        //
-    <>
+    function handleClick(idx: number) {
+        if (idx == currentIdx) {
+            //setIsExpanded((prev) => !prev);
+        } else {
+            move(idx);
+        }
+    }
 
+    return (
+    <>
     <motion.div 
     className="flex items-center content-center justify-center justify-items-center -space-x-32" 
     animate={{x: limitAdjustments()}}
     transition={{ 
         type: "tween",  
         duration: 0.1
-    }}
-    >
+    }}>
     {/* <AnimatePresence> */}
         {cards.map((card, idx) => {
             if (idx <= upperLimit() && idx >= lowerLimit()) {
                 return (
-                    
                     <motion.div
-                    //onWheel={handleScroll}
+                    onClick={() => move(idx)}
                     key={idx}
                     custom={idx}
                     variants={browserElementAnimationStates}
