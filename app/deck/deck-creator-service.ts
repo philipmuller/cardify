@@ -51,40 +51,50 @@ class DeckCreatorService {
     \n Do not include any text other than a title and a sequence of Q and A strings on separated lines. 
     Do not describe what you are doing or understanding, just output the lines following the described formatting.`;
 
+    static mockResponseText = `Title: This is a test title
+    \nQ: What has allowed science fiction writers to speculate about the conditions on Venus?
+    \nA: The opaque cloud cover of Venus.
+    \nQ: This is the second question
+    \nA: This is the second answer
+    \nQ: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel placerat lectus. Nulla sit amet odio eu erat gravida iaculis et id nulla. Donec in feugiat velit. Sed mollis neque ornare felis elementum, id rutrum nulla bibendum. Nam malesuada posuere erat, quis maximus augue tempus a. Nam ullamcorper nulla nec ex aliquam, ac pulvinar elit congue. Maecenas tincidunt ac mauris nec tempus. Proin sem felis, vehicula eu massa sed, dictum fermentum ante. In neque nisi, luctus eget nibh eu, porttitor molestie metus. Sed quis tristique tortor. Maecenas accumsan non eros eget vestibulum. Nulla condimentum, tellus sit amet hendrerit viverra, sem ipsum feugiat ipsum, eu convallis mi ligula quis massa. Nullam sed tincidunt mauris. Praesent semper sapien nec elit aliquet, non semper sem facilisis. Quisque eget nulla magna. Praesent interdum in eros ac ultrices. Nullam et neque ante. Phasellus in ligula tristique, pulvinar ligula ut, dapibus ligula. Vivamus tempor finibus consequat. Mauris nec facilisis nisi, eu interdum lectus. Vestibulum tempus condimentum eros, a pharetra tortor semper at. Morbi efficitur efficitur hendrerit. Nunc convallis mauris nec ornare egestas. Nunc fermentum lacus dolor, sed scelerisque lacus rutrum sed. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec euismod diam nec sem volutpat, eget consequat neque sagittis. Nam ac faucibus odio. Donec tincidunt quam congue ullamcorper dictum. Sed est mi, pellentesque eget aliquam et, porttitor non metus. Fusce tristique est eu purus facilisis, sit amet dapibus mi tincidunt. Duis a hendrerit massa, non sollicitudin ipsum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas tristique nec lacus ullamcorper ultricies. Sed pharetra odio a quam sodales congue. Aenean ultricies augue enim, ac lacinia orci vulputate ac. Sed interdum non odio et eleifend. Nulla est ex, elementum a fermentum vitae, ornare id tortor. Duis dolor enim, dignissim in erat et, viverra congue metus. Aliquam dictum lectus vitae porttitor faucibus. Etiam viverra mollis orci ac vehicula. Phasellus fermentum varius leo, a tincidunt nulla.
+    Etiam et dignissim ante, at finibus diam. Ut in eleifend turpis. Integer ac commodo massa. Donec nisi justo, elementum vestibulum tortor vel, cursus porta felis. Sed congue eleifend velit, ac efficitur lorem aliquam sit amet. Fusce diam sapien, euismod id egestas eget, posuere at tellus. Nam sed porttitor ligula, ut scelerisque erat. Pellentesque in turpis interdum, finibus nisi sed, tincidunt magna. Nunc tincidunt a enim eget lacinia. Cras in maximus erat, vitae venenatis metus. Donec non ornare urna. Phasellus turpis ex, consequat vitae leo eu, malesuada scelerisque lorem.
+    Aliquam erat volutpat. Sed sit amet egestas mi. Aenean ullamcorper, risus sed porttitor aliquet, metus sem condimentum nisi, in mattis libero diam in quam. In eget augue nec orci dignissim eleifend. Suspendisse id purus in elit tristique lobortis eu non tortor. Suspendisse tellus justo, feugiat quis lacus eu, congue imperdiet neque. Vestibulum iaculis dolor eget lorem imperdiet efficitur. Aenean sit amet venenatis sem. Sed consequat, justo non molestie venenatis, arcu ligula interdum arcu, eu laoreet felis orci a massa. Curabitur eget vehicula ante. Nullam non velit non felis pulvinar euismod vitae congue dui. Suspendisse vel cursus libero, in eleifend ipsum. Nulla sed sapien neque. Pellentesque imperdiet ultrices pellentesque. Nunc sit amet tristique lacus.
+    
+    \nA: This is the third answer
+    \nQ: This is the fourth question
+    \nA: This is the fourth answer
+    \nQ: This is the fifth question
+    \nA: This is the fifth answer
+    \nQ: This is the sixth question
+    \nA: This is the sixth answer
+    \nQ: This is the seventh question
+    \nA: This is the seventh answer
+    \nQ: This is the eigth question
+    \nA: This is the eighth answer
+    `;
+
     private static async getRawData(inputText: string, liveMode: boolean) {
 
         const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
         const anthropic = new Anthropic({ apiKey: anthropicKey });
           
         if (DeckCreatorService.devMode) {
-          return {
-            choices: [
-              {
-                message: {
-                  content: `Title: This is a test title
-                  \nQ: What has allowed science fiction writers to speculate about the conditions on Venus?
-                  \nA: The opaque cloud cover of Venus.
-                  \nQ: This is the second question
-                  \nA: This is the second answer
-                  \nQ: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel placerat lectus. Nulla sit amet odio eu erat gravida iaculis et id nulla. Donec in feugiat velit. Sed mollis neque ornare felis elementum, id rutrum nulla bibendum. Nam malesuada posuere erat, quis maximus augue tempus a. Nam ullamcorper nulla nec ex aliquam, ac pulvinar elit congue. Maecenas tincidunt ac mauris nec tempus. Proin sem felis, vehicula eu massa sed, dictum fermentum ante. In neque nisi, luctus eget nibh eu, porttitor molestie metus. Sed quis tristique tortor. Maecenas accumsan non eros eget vestibulum. Nulla condimentum, tellus sit amet hendrerit viverra, sem ipsum feugiat ipsum, eu convallis mi ligula quis massa. Nullam sed tincidunt mauris. Praesent semper sapien nec elit aliquet, non semper sem facilisis. Quisque eget nulla magna. Praesent interdum in eros ac ultrices. Nullam et neque ante. Phasellus in ligula tristique, pulvinar ligula ut, dapibus ligula. Vivamus tempor finibus consequat. Mauris nec facilisis nisi, eu interdum lectus. Vestibulum tempus condimentum eros, a pharetra tortor semper at. Morbi efficitur efficitur hendrerit. Nunc convallis mauris nec ornare egestas. Nunc fermentum lacus dolor, sed scelerisque lacus rutrum sed. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec euismod diam nec sem volutpat, eget consequat neque sagittis. Nam ac faucibus odio. Donec tincidunt quam congue ullamcorper dictum. Sed est mi, pellentesque eget aliquam et, porttitor non metus. Fusce tristique est eu purus facilisis, sit amet dapibus mi tincidunt. Duis a hendrerit massa, non sollicitudin ipsum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas tristique nec lacus ullamcorper ultricies. Sed pharetra odio a quam sodales congue. Aenean ultricies augue enim, ac lacinia orci vulputate ac. Sed interdum non odio et eleifend. Nulla est ex, elementum a fermentum vitae, ornare id tortor. Duis dolor enim, dignissim in erat et, viverra congue metus. Aliquam dictum lectus vitae porttitor faucibus. Etiam viverra mollis orci ac vehicula. Phasellus fermentum varius leo, a tincidunt nulla.
-                  Etiam et dignissim ante, at finibus diam. Ut in eleifend turpis. Integer ac commodo massa. Donec nisi justo, elementum vestibulum tortor vel, cursus porta felis. Sed congue eleifend velit, ac efficitur lorem aliquam sit amet. Fusce diam sapien, euismod id egestas eget, posuere at tellus. Nam sed porttitor ligula, ut scelerisque erat. Pellentesque in turpis interdum, finibus nisi sed, tincidunt magna. Nunc tincidunt a enim eget lacinia. Cras in maximus erat, vitae venenatis metus. Donec non ornare urna. Phasellus turpis ex, consequat vitae leo eu, malesuada scelerisque lorem.
-                  Aliquam erat volutpat. Sed sit amet egestas mi. Aenean ullamcorper, risus sed porttitor aliquet, metus sem condimentum nisi, in mattis libero diam in quam. In eget augue nec orci dignissim eleifend. Suspendisse id purus in elit tristique lobortis eu non tortor. Suspendisse tellus justo, feugiat quis lacus eu, congue imperdiet neque. Vestibulum iaculis dolor eget lorem imperdiet efficitur. Aenean sit amet venenatis sem. Sed consequat, justo non molestie venenatis, arcu ligula interdum arcu, eu laoreet felis orci a massa. Curabitur eget vehicula ante. Nullam non velit non felis pulvinar euismod vitae congue dui. Suspendisse vel cursus libero, in eleifend ipsum. Nulla sed sapien neque. Pellentesque imperdiet ultrices pellentesque. Nunc sit amet tristique lacus.
-                  
-                  \nA: This is the third answer
-                  \nQ: This is the fourth question
-                  \nA: This is the fourth answer
-                  \nQ: This is the fifth question
-                  \nA: This is the fifth answer
-                  \nQ: This is the sixth question
-                  \nA: This is the sixth answer
-                  \nQ: This is the seventh question
-                  \nA: This is the seventh answer
-                  \nQ: This is the eigth question
-                  \nA: This is the eighth answer`
+          if (this.aiEngine == AiEngineType.Anthropic) {
+            return {
+              completion: this.mockResponseText
+            };
+          } else {
+            return {
+              choices: [
+                {
+                  message: {
+                    content: this.mockResponseText
+                  }
                 }
-              }
-            ],
+              ],
+            };
           }
+          
       
         } else {
           if (this.aiEngine == AiEngineType.Anthropic) {
