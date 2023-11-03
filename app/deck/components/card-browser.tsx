@@ -234,7 +234,11 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
                         duration: 0.1
                       }}
                     >
-                        <CardComponent card={card} fade={calculateCardFade(idx)} expanded={isExpanded && idx==currentIdx} />
+                        <CardComponent 
+                        card={card} 
+                        fade={calculateCardFade(idx)} 
+                        expanded={isExpanded && idx==currentIdx} 
+                        flippable={idx==currentIdx}/>
 
                     </motion.div>
                     

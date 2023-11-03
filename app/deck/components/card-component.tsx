@@ -4,16 +4,16 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import { Card } from "../card-model";
 import { useState } from "react";
 
-export default function CardComponent({ card, fade, expanded }: { card: Card, fade: number, expanded: boolean }) {
+export default function CardComponent({ card, fade, expanded, flippable }: { card: Card, fade: number, expanded: boolean, flippable: boolean }) {
 
     const [isFlipped, setIsFlipped] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
 
     function handleFlip() {
-        //if(!isAnimating) {
+        if(flippable) {
             setIsFlipped(!isFlipped);
             setIsAnimating(true);
-        //}
+        }
        
     }
 
