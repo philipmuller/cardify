@@ -24,7 +24,7 @@ enum AiEngineType {
 
 class DeckCreatorService {
     static devMode = true;
-    static aiEngine: AiEngineType = AiEngineType.Anthropic;
+    static aiEngine: AiEngineType = AiEngineType.OpenAI;
 
     static textSystemPrompt = `
     You are a flashcard generator. 
@@ -197,11 +197,12 @@ class DeckCreatorService {
 
         var rawString = "";
 
-        if (AiEngineType.Anthropic) {
+        if (this.aiEngine == AiEngineType.Anthropic) {
           const anthropicRawData = rawData as Anthropic.Completions.Completion;
           rawString = anthropicRawData.completion ?? "";
         } else {
           const openAIrawData = rawData as OpenAI.Chat.Completions.ChatCompletion;
+          console.log("RAW DATA: " + JSON.stringify(openAIrawData));
           rawString = openAIrawData.choices[0].message.content ?? "";
         }
         //console.log(rawString);

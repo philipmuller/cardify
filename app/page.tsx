@@ -102,7 +102,7 @@ export default function Home() {
   const offsetsX = [0, 0, 0];
   const fileOffsetsX = [190, 0, -190];
 
-  const finalSwatches = ["to-amber-50", "to-orange-50", "to-red-50"];
+  const finalSwatches: [string] = [""];//"to-amber-50 dark:to-amber-950", "to-orange-50 dark:to-orange-950", "to-red-50 dark:to-red-950"];
 
   const variants = {
     initial: { opacity: 0 },
@@ -182,7 +182,7 @@ export default function Home() {
         {Array.from({ length: cardNr }).map((_, idx) => (
           <motion.div 
           key={idx}
-          className={`bg-gradient-to-r from-white ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4 `}
+          className={`bg-gradient-to-r from-white dark:from-[#2E2A29] to-transparent dark:to-transparent ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4 `}
           initial={{ y: offsetsY[idx], zIndex: idx+50 }}
           whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), zIndex: idx+50}}
           whileHover={{ scale: 1.07 }}
@@ -195,8 +195,8 @@ export default function Home() {
         <motion.div layout className="flex flex-col items-center p-8 -z-10"
         whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 290 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isPressingCommand ? 0 : 1}}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-          <ArrowSquareDown color="#a8a29e" size={48} className="mt-1 mb-1.5"/>
-          <p className="text-lg text-stone-500">Drop any file</p>
+          <ArrowSquareDown size={48} className="mt-1 mb-1.5 text-stone-400 dark:text-stone-500"/>
+          <p className="text-lg text-stone-400 dark:text-stone-500">Drop any file</p>
 
         </motion.div>
 
@@ -204,8 +204,8 @@ export default function Home() {
         whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -10 : 0, scale: isPressingCommand ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
           <div className="flex flex-row items-center">
-            <Command color="#a8a29e" size={48} />
-            <h1 className={`text-4xl text-stone-400 ${isPressingCommand ? "opacity-40" : "opacity-100"}`}>V</h1>
+            <Command className="text-stone-400 dark:text-stone-500" size={48} />
+            <h1 className={`text-4xl text-stone-400 dark:text-stone-500 ${isPressingCommand ? "opacity-40" : "opacity-100"}`}>V</h1>
           </div>
           <p className="text-lg text-stone-500">Paste any text</p>
         </motion.div>
@@ -213,11 +213,11 @@ export default function Home() {
         <motion.div layout className="flex flex-col items-center p-8 hover:bg-blue z-5" 
         whileInView={{ opacity: isPressingCommand || isHoveringFile ? 0 : 1}}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-          <Link href="/live" className="text-4xl text-stone-400 flex flex-row items-center">
-              <Record size={28} color="#a8a29e" weight="fill"/>
+          <Link href="/live" className="text-4xl text-stone-400 dark:text-stone-500 flex flex-row items-center">
+              <Record size={28} className="text-stone-400 dark:text-stone-500" weight="fill"/>
               Live
           </Link>
-          <p className="text-lg text-stone-500">Record any lecture</p>
+          <p className="text-lg text-stone-400 dark:text-stone-500">Record any lecture</p>
         </motion.div>
         
         
