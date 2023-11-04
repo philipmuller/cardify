@@ -8,12 +8,12 @@ import CardComponent from "./card-component";
 import ExpandIcon from "@/app/icons/expand-icon";
 
 export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMode?: boolean}) {
-  
-    const [currentIdx, setCurrentIdx] = useState(0);
+    const carouselItemSize = 3;
+    const [currentIdx, setCurrentIdx] = useState(carouselItemSize);
     const [isExpanded, setIsExpanded] = useState(false);
     const accumulatedDeltaY = useRef(0);
     const accumulatedDeltaX = useRef(0);
-    const carouselItemSize = 3;
+    
 
     useEffect(() => {
         console.log("RERUNNING EFFECT");
@@ -120,7 +120,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
 
     function next() {
         setCurrentIdx((prev) => {
-            if (prev < cards.length - 1) {
+            if (prev < cards.length + carouselItemSize - 1) {
                 return prev + 1;
             }
             return prev;
@@ -129,28 +129,22 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
 
     function prev() {
         setCurrentIdx((prev) => {
-            if (prev > 0) {
+            if (prev > carouselItemSize) {
                 return prev - 1;
             }
             return prev;
         });
     }
     
-    function move(idx: number) { if (idx >= 0 && idx < cards.length) { setCurrentIdx(() => idx) } }
+    function move(idx: number) { if (idx >= carouselItemSize && idx < cards.length + carouselItemSize) { setCurrentIdx(() => idx) } }
 
-    function limitAdjustments() {
-        if (isExpanded) { return 0 };
+    function generateCarouselDeck() {
+        var nullCards: Card[] = [];
 
-        let unit = 100;
-        var value = carouselItemSize;
-        if (currentIdx < carouselItemSize) {
-            value = currentIdx;
-        } else if (currentIdx > cards.length - 1 - carouselItemSize) {
-            value = 2*carouselItemSize + currentIdx - (cards.length - 1);
+        for (let i = 0; i < carouselItemSize; i++) {
+            nullCards.push({front: "", back: ""});
         }
-
-        //console.log(value);
-        return (carouselItemSize - value) * unit;
+        return [...nullCards, ...cards, ...nullCards];
     }
 
     function upperLimit(): number { return isExpanded ? currentIdx : currentIdx + carouselItemSize }
@@ -201,24 +195,29 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     }
 
     function handleClick(idx: number) {
-        if (idx == currentIdx) {
-            //setIsExpanded((prev) => !prev);
-        } else {
+        if (!(idx == currentIdx)) {
             move(idx);
+        }
+    }
+
+    function carouselElement(idx: number, card: Card) {
+        if (idx < carouselItemSize || idx >= cards.length + carouselItemSize) {
+            return (<div className="w-100 h-130 invisible"/>);
+        } else {
+            return (
+                <CardComponent 
+                    card={card} 
+                    fade={calculateCardFade(idx)} 
+                    expanded={isExpanded && idx==currentIdx} 
+                    flippable={idx==currentIdx}/>
+            );
         }
     }
 
     return (
     <>
-    <motion.div 
-    className="flex items-center content-center justify-center justify-items-center -space-x-32" 
-    animate={{x: limitAdjustments()}}
-    transition={{ 
-        type: "tween",  
-        duration: 0.1
-    }}>
-    {/* <AnimatePresence> */}
-        {cards.map((card, idx) => {
+    <div className="flex items-center content-center justify-center justify-items-center -space-x-32">
+        {generateCarouselDeck().map((card, idx) => {
             if (idx <= upperLimit() && idx >= lowerLimit()) {
                 return (
                     <motion.div
@@ -228,25 +227,19 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
                     variants={browserElementAnimationStates}
                     initial={false}
                     animate={calculateBrowserElementAnimation(idx)}
-                    //exit={"offscreenHorizontal"}
                     transition={{ 
                         type: "tween",  
                         duration: 0.1
                       }}
                     >
-                        <CardComponent 
-                        card={card} 
-                        fade={calculateCardFade(idx)} 
-                        expanded={isExpanded && idx==currentIdx} 
-                        flippable={idx==currentIdx}/>
+                        {carouselElement(idx, card)}
 
                     </motion.div>
                     
                 );
             }  
         })}
-    {/* </AnimatePresence> */}
-    </motion.div>
+    </div>
 
     <div className={`flex red-500 flex-row gap-10 ${isExpanded ? "-translate-y-[150px]" : ""}`}>
         <button onClick={prev}><ArrowLeft className="text-stone-400 dark:text-stone-500" size={32}/></button>
