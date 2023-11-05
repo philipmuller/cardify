@@ -4,30 +4,22 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import { Card } from "../card-model";
 import { useState } from "react";
 
-export default function CardComponent({ card, fade, expanded, flippable }: { card: Card, fade: number, expanded: boolean, flippable: boolean }) {
+export default function CardComponent({ card, fade, expanded, flipped, onClick}: { card: Card, fade: number, expanded: boolean, flipped: boolean, onClick: () => void }) {
 
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [isAnimating, setIsAnimating] = useState(false);
-
-    function handleFlip() {
-        if(flippable) {
-            setIsFlipped(!isFlipped);
-            setIsAnimating(true);
-        }
-       
-    }
+    // const [isFlipped, setIsFlipped] = useState(flip ?? false);
+    // const [isAnimating, setIsAnimating] = useState(false);
 
     const cardAnimationStates: Variants = {
         regular: {
           opacity: 1,
-          rotateY: isFlipped ? 180 : 0, 
+          rotateY: flipped ? 180 : 0, 
           width: "20rem", 
           minHeight: "28rem",
           maxHeight: "28rem",
         },
         expanded: {
           opacity: 1,
-          rotateY: isFlipped ? 180 : 0, 
+          rotateY: flipped ? 180 : 0, 
           width: "50rem", 
           minHeight: "50rem",
           maxHeight: "1000rem",
@@ -40,7 +32,7 @@ export default function CardComponent({ card, fade, expanded, flippable }: { car
     }
 
     function frontOrBack() {
-      if (isFlipped) {
+      if (flipped) {
         return <motion.p className={`scale-y-[-1] rotate-180 ${expanded ? "" : "line-clamp-[11]"}`} animate={{ opacity: fade }}>{card.back}</motion.p>
       } else {
         return <motion.p className={expanded ? "" : "line-clamp-[11]"} animate={{ opacity: fade }}>{card.front}</motion.p>
@@ -55,8 +47,7 @@ export default function CardComponent({ card, fade, expanded, flippable }: { car
         initial={false}
         animate={expanded ? "expanded" : "regular"}
         layout
-        onClick={handleFlip}
-        onAnimationComplete={()=>setIsAnimating(false)}
+        onClick={onClick}
         // transition={{ 
         //   type: "spring", 
         //   stiffness: 100, 

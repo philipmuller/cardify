@@ -11,6 +11,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     const carouselItemSize = 3;
     const [currentIdx, setCurrentIdx] = useState(carouselItemSize);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(false);
     const accumulatedDeltaY = useRef(0);
     const accumulatedDeltaX = useRef(0);
     
@@ -30,6 +31,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
         var keyUp = false;
 
         const handleKeyDown = async (event: KeyboardEvent) => {
+
             if (event.key == " ") {
                 event.preventDefault();
                 event.stopPropagation();
@@ -61,6 +63,11 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
                 prev();
             }
 
+            if (event.key == "Enter") {
+                event.preventDefault();
+                event.stopPropagation();
+                setIsFlipped((prev) => !prev);
+            }
             
         }
 
@@ -110,7 +117,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
         };
 
     
-    }, [cards, isExpanded]);
+    }, [cards, isExpanded, isFlipped]);
 
     function calculateZ(idx: number) { return 10 - Math.abs(currentIdx - idx) }
     function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/20) }
@@ -121,6 +128,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     function next() {
         setCurrentIdx((prev) => {
             if (prev < cards.length + carouselItemSize - 1) {
+                setIsFlipped(() => false);
                 return prev + 1;
             }
             return prev;
@@ -130,13 +138,20 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     function prev() {
         setCurrentIdx((prev) => {
             if (prev > carouselItemSize) {
+                setIsFlipped(() => false);
                 return prev - 1;
             }
             return prev;
         });
     }
     
-    function move(idx: number) { if (idx >= carouselItemSize && idx < cards.length + carouselItemSize) { setCurrentIdx(() => idx) } }
+    function move(idx: number) { 
+        console.log(`MOVE | idx = ${idx} | currentIdx = ${currentIdx} | isFlipped = ${isFlipped}`);
+        if (idx >= carouselItemSize && idx < cards.length + carouselItemSize) { 
+            setIsFlipped(() => false); 
+            setCurrentIdx(() => idx); 
+        } 
+    }
 
     function generateCarouselDeck() {
         var nullCards: Card[] = [];
@@ -195,7 +210,9 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     }
 
     function handleClick(idx: number) {
-        if (!(idx == currentIdx)) {
+        if (idx == currentIdx) {
+            setIsFlipped((prev) => !prev);
+        } else {
             move(idx);
         }
     }
@@ -209,7 +226,9 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
                     card={card} 
                     fade={calculateCardFade(idx)} 
                     expanded={isExpanded && idx==currentIdx} 
-                    flippable={idx==currentIdx}/>
+                    flipped={isFlipped && idx==currentIdx}
+                    onClick={() => handleClick(idx)}
+                />
             );
         }
     }
@@ -221,7 +240,6 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
             if (idx <= upperLimit() && idx >= lowerLimit()) {
                 return (
                     <motion.div
-                    onClick={() => move(idx)}
                     key={idx}
                     custom={idx}
                     variants={browserElementAnimationStates}

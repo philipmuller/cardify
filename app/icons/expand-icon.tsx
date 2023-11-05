@@ -27,7 +27,7 @@ export default function ExpandIcon ({ className, color, close }: { className?: s
     <div className={`flex flex-col justify-center items-center -space-y-1`}>
         {text()}
         <svg xmlns="http://www.w3.org/2000/svg" width="99" height="14" viewBox="0 0 99 14" className={className}>
-            <path d="M1.40234 1.35742V7.89588C1.40234 10.0625 3.15877 11.819 5.32542 11.819H92.9408C95.1075 11.819 96.8639 10.0625 96.8639 7.89588V1.35742" fill="none" stroke-width="2.61538" stroke-linecap="round"/>
+            <path d="M1.40234 1.35742V7.89588C1.40234 10.0625 3.15877 11.819 5.32542 11.819H92.9408C95.1075 11.819 96.8639 10.0625 96.8639 7.89588V1.35742" fill="none" strokeWidth="2.61538" strokeLinecap="round"/>
         </svg>
     </div>
     
