@@ -8,8 +8,8 @@ import { ThemeSwitcher } from "./theme-switcher";
 const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cardify demonstrator",
-  description: "Turn any text into flashcards",
+  title: "Cardybee",
+  description: "Turn anything into flashcards",
 };
 
 export default function RootLayout({
