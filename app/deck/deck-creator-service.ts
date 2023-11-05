@@ -72,7 +72,7 @@ class DeckCreatorService {
     \nQ: This is the odisnfoisdmfoidsmoidf
     \nA: This is the eighth answer
     \nQ: This is HELLO
-    \nA: This is the eighth answer
+    \nA: This is the ninth answer
     `;
 
     private static async getRawData(inputText: string, liveMode: boolean) {
@@ -207,7 +207,7 @@ class DeckCreatorService {
           console.log("RAW DATA: " + JSON.stringify(openAIrawData));
           rawString = openAIrawData.choices[0].message.content ?? "";
         }
-        //console.log(rawString);
+        console.log("RAW STRING: " + rawString);
     
         let title: string = "";
         const cards: Card[] = [];
@@ -215,6 +215,7 @@ class DeckCreatorService {
         let back = "";
         let isFront = true;
         for (const part of rawString.split("\n")) {
+          console.log("PART: " + part);
             if (part.includes("Title:")) {
                 title += part.substring(7);
             }
@@ -231,6 +232,11 @@ class DeckCreatorService {
                 isFront = false;
             }
         }
+
+        if (front != "" || back != "") {
+            cards.push({ front, back });
+        }
+        
         let deck: Deck = { title, cards };
         return deck;
       }
