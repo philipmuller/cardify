@@ -1,8 +1,8 @@
-import { Deck } from "./card-model";
-import { getDeck } from "./deck-creator-service";
-import CardBrowser from "./components/card-browser";
+import { Deck } from "../model/card-model";
+import { getDeck } from "../engine/deck-creator-service";
+import CardBrowser from "../components/card-browser";
 
-export default async function Deck({ searchParams }: { searchParams: { fileText: string } }) {
+export default async function DeckPage({ searchParams }: { searchParams: { fileText: string } }) {
 
   const input = searchParams.fileText;
   console.log(input);

@@ -1,4 +1,4 @@
-import LiveView from "./components/live-view";
+import LiveView from "../components/live-view";
 
 export default async function Deck() {
 
