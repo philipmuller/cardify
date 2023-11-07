@@ -6,6 +6,8 @@ import CardBrowser from "./card-browser";
 import { useState, useEffect, useRef } from "react";
 import { Record, Pause } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
+import { type PutBlobResult } from '@vercel/blob';
+import { upload } from '@vercel/blob/client';
 
 export default function LiveView() {
 
@@ -28,29 +30,36 @@ export default function LiveView() {
                 console.log(mediaRecorder.current?.state);
             }
 
-            mediaRecorder.current.ondataavailable = (event) => {
+            mediaRecorder.current.ondataavailable = async (event) => {
                 console.log('Data available');
                 console.log(mediaRecorder.current?.state);
                 var chunks: Blob[] = [];
                 chunks.push(event.data);
 
-                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+                var audioFile = new File([audioBlob], "slice.wav");
+
+                const newBlob = await upload("slice.wav", audioBlob, {
+                    access: 'public',
+                    handleUploadUrl: '/api/live/upload',
+                });
+                console.log("New blob: " + JSON.stringify(newBlob));
 
                 try {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(audioBlob);
-                    reader.onloadend = async () => {
-                        const rawBase64data = reader.result as string;
-                        const base64dataComponents = rawBase64data.split(",");
-                        var base64data = base64dataComponents[base64dataComponents.length - 1];
-                        /* if (base64data[0] == "+") {
-                            base64data = base64data.substring(1);
-                        } */
-                        //base64data = headers + base64data;
-                        const deck = await getDeck(base64data, true);
-                        console.log("Setting cards...");
-                        setCards((oldCards) => [...oldCards, ...deck.cards]);
-                    }
+                    // const reader = new FileReader();
+                    // reader.readAsDataURL(audioBlob);
+                    // reader.onloadend = async () => {
+                    //     const rawBase64data = reader.result as string;
+                    //     const base64dataComponents = rawBase64data.split(",");
+                    //     var base64data = base64dataComponents[base64dataComponents.length - 1];
+                    //     /* if (base64data[0] == "+") {
+                    //         base64data = base64data.substring(1);
+                    //     } */
+                    //     //base64data = headers + base64data;
+                    //     const deck = await getDeck(base64data, true);
+                    //     console.log("Setting cards...");
+                    //     setCards((oldCards) => [...oldCards, ...deck.cards]);
+                    // }
 
                 } catch (err) {
                     console.log(err);
