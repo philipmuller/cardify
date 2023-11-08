@@ -42,11 +42,11 @@ export default function LiveView() {
 
                 const newBlob = await upload("slice.webm", audioBlob, {
                     access: 'public',
-                    handleUploadUrl: '/api/live/upload',
+                    handleUploadUrl: '/api/file/upload',
                 });
                 console.log("New blob: " + JSON.stringify(newBlob));
 
-                const response = await fetch('/api/live/transcribe?' + new URLSearchParams({
+                const response = await fetch('/api/file/transcribe?' + new URLSearchParams({
                     'url': newBlob.url,
                 }))
 

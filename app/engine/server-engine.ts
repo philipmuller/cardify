@@ -6,7 +6,7 @@ import { FileEngine, VercelBlobEngine } from "./file-engine";
 
 
 export class LighthouseEngine {
-    private static demoMode: boolean = false; //demo mode disables AI calls and replaces them with static responses
+    private static demoMode: boolean = true; //demo mode disables AI calls and replaces them with static responses
 
     private static aiEngine: AIEngine = this.demoMode ? new DemoAIEngine() : new OpenAIEngine();
     private static fileEngine: FileEngine = VercelBlobEngine;
