@@ -31,35 +31,42 @@ export async function POST(request: Request): Promise<NextResponse> {
         // Get notified of client upload completion
         // ⚠️ This will not work on `localhost` websites,
         // Use ngrok or similar to get the full upload flow
- 
-        console.log('blob upload completed', blob, tokenPayload);
-        const http = require('http');
+        const https = require('https');
         const fs = require('fs');
-        
-        const file = fs.createWriteStream("tmp/file.wav");
-        const request = http.get(blob.url, function(response: any) {
-          response.pipe(file);
-          // after download completed close filestream
-          file.on("finish", async () => {
-              file.close();
-              console.log("Download Completed");
 
-              const audioFile = fs.createReadStream("tmp/file.wav");
-              
-              const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
-              let response = await openai.audio.transcriptions.create({
-                file: await audioFile,
-                model: "whisper-1",
-              }); 
-              
-              console.log(response.text);
-          });
-        });
+        function downloadFile(url: string, path: string) {
+        
+          https.get(url, (res: any) => {
+              const fileStream = fs.createWriteStream(path);
+              res.pipe(fileStream);
+        
+              fileStream.on('finish', () => {
+                  fileStream.close();
+                  console.log('Download finished')
+              });
+          })
+        }
  
         try {
           // Run any logic after the file upload completed
           // const { userId } = JSON.parse(tokenPayload);
           // await db.update({ avatar: blob.url, userId });
+          console.log('blob upload completed', blob, tokenPayload);
+
+          downloadFile(blob.url, `/tmp/${blob.pathname}`);
+          console.log('finished downloading file');
+          const fileContent = fs.readFileSync(`/tmp/${blob.pathname}`);
+          console.log(`finished reading file from /tmp/${blob.pathname}`);
+
+          const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
+
+          let response = await openai.audio.transcriptions.create({
+            file: await fileContent,
+            model: "whisper-1",
+          }); 
+
+          console.log("TRANSCRIPTION RESPONSE: " + JSON.stringify(response));
+
         } catch (error) {
           throw new Error('Could not update user');
         }
