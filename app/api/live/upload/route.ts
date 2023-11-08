@@ -34,12 +34,25 @@ export async function POST(request: Request): Promise<NextResponse> {
         const https = require('https');
         const fs = require('fs');
 
+        const { Readable } = require('stream');
+        const { finished } = require('stream/promises');
+        const path = require("path");
+
+        async function downloadFileD(url: string, filename: string) {
+          console.log('running downloadFileD');
+          const res = await fetch(url);
+          console.log(`fetch successful, result: ${JSON.stringify(res)}`);
+          const destination = path.resolve(`/tmp/${filename}`);
+          console.log(`destination: ${JSON.stringify(destination)}`);
+          const fileStream = fs.createWriteStream(destination, { flags: 'wx' });
+          await finished(Readable.fromWeb(res.body).pipe(fileStream));
+        }
+
         function downloadFile(url: string, path: string) {
         
           https.get(url, (res: any) => {
               const fileStream = fs.createWriteStream(path);
               res.pipe(fileStream);
-        
               fileStream.on('finish', () => {
                   fileStream.close();
                   console.log('Download finished')
@@ -53,7 +66,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           // await db.update({ avatar: blob.url, userId });
           console.log('blob upload completed', blob, tokenPayload);
 
-          downloadFile(blob.url, `/tmp/${blob.pathname}`);
+          await downloadFileD(blob.url, blob.pathname);
           console.log('finished downloading file');
           const fileContent = fs.readFileSync(`/tmp/${blob.pathname}`);
           console.log(`finished reading file from /tmp/${blob.pathname}`);
