@@ -17,11 +17,11 @@ export async function GET(request: Request) {
           console.log(`running downloadFileD with params: url: ${url}, filename: ${filename}`);
           const res = await fetch(new URL(url), { method: 'GET' });
           console.log(res.statusText);
-          //console.log(`fetch successful, result: ${JSON.stringify(res)}, res.body: ${JSON.stringify(res.body)}, ${res}`);
-          const destination = path.resolve(`tmp/${filename}`);
-          console.log(`destination: ${JSON.stringify(destination)}`);
-          const fileStream = fs.createWriteStream(destination);
-          //console.log(`fileStream: ${JSON.stringify(fileStream)}`);
+          console.log(`fetch successful, result: ${JSON.stringify(res)}, res.body: ${JSON.stringify(res.body)}, ${res}`);
+          //const destination = path.resolve(`tmp/${filename}`);
+          //console.log(`destination: ${JSON.stringify(destination)}`);
+          const fileStream = fs.createWriteStream(`/tmp/${filename}`);
+          console.log(`fileStream: ${JSON.stringify(fileStream)}`);
           await finished(Readable.fromWeb(res.body).pipe(fileStream));
         }
 
@@ -43,16 +43,15 @@ export async function GET(request: Request) {
           // await db.update({ avatar: blob.url, userId });
           const filename = "slice.webm";
           await downloadFileD(url, filename);
-          const destination = path.resolve(`tmp/${filename}`);
           console.log('finished downloading file');
-          fs.readFile(destination, (err: any, data: any) => {
+          fs.readFile(`/tmp/${filename}`, (err: any, data: any) => {
             if (!err && data) {
               //console.log('data: ' + data);
             } else {
               console.log('err: ' + err);
             }
           });
-          const fileContent = fs.readFileSync(destination);
+          const fileContent = fs.readFileSync(`/tmp/${filename}`);
           //console.log(`finished reading file from /tmp/slice.wav, fileContent: ${fileContent}, ${JSON.stringify(fileContent)}`);
 
           const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
@@ -60,7 +59,7 @@ export async function GET(request: Request) {
           //console.log("ASKING WHISPER " + JSON.stringify(fileContent));
           try {
             const response = await openai.audio.transcriptions.create({
-              file: fs.createReadStream(destination),
+              file: fs.createReadStream(`/tmp/${filename}`),
               model: 'whisper-1',
             });
             //return response?.text
