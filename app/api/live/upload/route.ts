@@ -1,5 +1,7 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
+import { anthropicKey, openAIKey } from "@/keychain";
+import OpenAI from "openai";
  
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
@@ -31,6 +33,26 @@ export async function POST(request: Request): Promise<NextResponse> {
         // Use ngrok or similar to get the full upload flow
  
         console.log('blob upload completed', blob, tokenPayload);
+        const http = require('http');
+        const fs = require('fs');
+        
+        const file = fs.createWriteStream("file.jpg");
+        const request = http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response: any) {
+          response.pipe(file);
+          // after download completed close filestream
+          file.on("finish", () => {
+              file.close();
+              console.log("Download Completed");
+          });
+        });
+
+        const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
+        let response = await openai.audio.transcriptions.create({
+          file: file,
+          model: "whisper-1",
+        }); 
+
+        console.log(response.text);
  
         try {
           // Run any logic after the file upload completed
