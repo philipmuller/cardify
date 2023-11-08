@@ -1,19 +1,33 @@
+import { ReadStream } from "fs";
 import { Deck , Card } from "../model/card-model";
 import { AIEngine, OpenAIEngine, DemoAIEngine } from "./ai-engine";
 import { AIIntent } from "./ai-intent";
 import { DatabaseEngine, FirebaseEngine } from "./database-engine";
-import { FileEngine, VercelBlobEngine } from "./file-engine";
+import { FileEngine } from "./file-engine";
 
 
-export class LighthouseEngine {
+export abstract class LighthouseEngine {
     private static demoMode: boolean = true; //demo mode disables AI calls and replaces them with static responses
 
     private static aiEngine: AIEngine = this.demoMode ? new DemoAIEngine() : new OpenAIEngine();
-    private static fileEngine: FileEngine = VercelBlobEngine;
     private static databaseEngine: DatabaseEngine = FirebaseEngine;
     
     static auth() {
         //Implement authentication
+    }
+
+    //File management ---------
+    static async donwloadFile(url: string, filename: string): Promise<string> {
+        return FileEngine.downloadFile(url, filename);
+    }
+
+    static readFile(path: string): ReadStream {
+        return FileEngine.readFile(path);
+    }
+
+    //AI features -------------
+    static async getTranscription(file: ReadStream): Promise<string> {
+        return this.aiEngine.transcribe(file);
     }
 
     static async getDeck(text?: string, audioURL?: URL, fileURL?: URL): Promise<Deck> {
