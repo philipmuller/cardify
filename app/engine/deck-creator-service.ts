@@ -5,16 +5,13 @@ import { anthropicKey, openAIKey } from "@/keychain";
 import OpenAI from "openai";
 import { exec } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
+import { LighthouseEngine } from "./server-engine";
 
 const fs = require('fs');
 const util = require('util');
 
 export async function getDeck(text: string, isAudioFile: boolean): Promise<Deck> {
-    console.log("DECK REQUESTED WITH TEXT:\n" + (isAudioFile ? "AUDIO FILE" : text));
-
-    let result = await DeckCreatorService.getDeck(text, isAudioFile);
-    console.log("DECK CREATED: " + JSON.stringify(result));
-    return result;
+    return LighthouseEngine.getDeck(text);
 }
 
 enum AiEngineType {
