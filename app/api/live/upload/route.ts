@@ -37,6 +37,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const { Readable } = require('stream');
         const { finished } = require('stream/promises');
         const path = require("path");
+        const fetch = require("node-fetch");
 
         async function downloadFileD(url: string, filename: string) {
           console.log(`running downloadFileD with params: url: ${url}, filename: ${filename}`);
