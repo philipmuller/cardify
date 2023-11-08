@@ -8,6 +8,7 @@ import { Record, Pause } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import { type PutBlobResult } from '@vercel/blob';
 import { upload } from '@vercel/blob/client';
+import { blob } from "stream/consumers";
 
 export default function LiveView() {
 
@@ -36,14 +37,26 @@ export default function LiveView() {
                 var chunks: Blob[] = [];
                 chunks.push(event.data);
 
-                const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-                var audioFile = new File([audioBlob], "slice.wav");
+                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                var audioFile = new File([audioBlob], "slice.webm");
 
-                const newBlob = await upload("slice.wav", audioBlob, {
+                const newBlob = await upload("slice.webm", audioBlob, {
                     access: 'public',
                     handleUploadUrl: '/api/live/upload',
                 });
                 console.log("New blob: " + JSON.stringify(newBlob));
+
+                const response = await fetch('/api/live/transcribe?' + new URLSearchParams({
+                    'url': newBlob.url,
+                }))
+
+                const json = await response.json();
+                console.log("JSON: " + JSON.stringify(json));
+
+                console.log(`Transcription: ${json.transcription}`);
+
+                const deck = await getDeck(json.transcription, false);
+                setCards((oldCards) => [...oldCards, ...deck.cards]);
 
                 try {
                     // const reader = new FileReader();
