@@ -36,8 +36,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         const http = require('http');
         const fs = require('fs');
         
-        const file = fs.createWriteStream("file.jpg");
-        const request = http.get("http://i3.ytimg.com/vi/J---aiyznGQ/mqdefault.jpg", function(response: any) {
+        const file = fs.createWriteStream("tmp/file.wav");
+        const request = http.get(blob.url, function(response: any) {
           response.pipe(file);
           // after download completed close filestream
           file.on("finish", () => {
@@ -46,9 +46,11 @@ export async function POST(request: Request): Promise<NextResponse> {
           });
         });
 
+        const audioFile = fs.createReadStream("tmp/file.wav");
+
         const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
         let response = await openai.audio.transcriptions.create({
-          file: file,
+          file: await audioFile,
           model: "whisper-1",
         }); 
 
