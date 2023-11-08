@@ -37,17 +37,16 @@ export async function POST(request: Request): Promise<NextResponse> {
         const { Readable } = require('stream');
         const { finished } = require('stream/promises');
         const path = require("path");
-        const fetch = require("node-fetch");
 
         async function downloadFileD(url: string, filename: string) {
           console.log(`running downloadFileD with params: url: ${url}, filename: ${filename}`);
-          const res = await fetch(url);
-          console.log(`fetch successful, result: ${JSON.stringify(res)}, res.body: ${JSON.stringify(res.body)}, ${res}`);
-          const destination = path.resolve(`/tmp/${filename}`);
+          const res = await fetch(new URL(url));
+          console.log(`fetch successful, result: ${JSON.stringify(res)}, res.body: ${JSON.stringify(res.arrayBuffer)}, ${res}`);
+          const destination = path.resolve(`tmp/${filename}`);
           console.log(`destination: ${JSON.stringify(destination)}`);
           const fileStream = fs.createWriteStream(destination, { flags: 'wx' });
           console.log(`fileStream: ${JSON.stringify(fileStream)}`);
-          await finished(Readable.fromWeb(res.body).pipe(fileStream));
+          await finished(Readable.fromWeb(res.arrayBuffer).pipe(fileStream));
         }
 
         function downloadFile(url: string, path: string) {
@@ -70,8 +69,15 @@ export async function POST(request: Request): Promise<NextResponse> {
 
           await downloadFileD(blob.url, blob.pathname);
           console.log('finished downloading file');
-          const fileContent = fs.readFileSync(`/tmp/${blob.pathname}`);
-          console.log(`finished reading file from /tmp/${blob.pathname}, fileContent: ${fileContent}, ${JSON.stringify(fileContent)}`);
+          fs.readFile('tmp/slice.wav', (err: any, data: any) => {
+            if (!err && data) {
+              console.log('data: ' + data);
+            } else {
+              console.log('err: ' + err);
+            }
+          });
+          const fileContent = fs.readFileSync(`tmp/${blob.pathname}`);
+          console.log(`finished reading file from tmp/${blob.pathname}, fileContent: ${fileContent}, ${JSON.stringify(fileContent)}`);
 
           const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
 
