@@ -41,17 +41,18 @@ export async function GET(request: Request) {
           // Run any logic after the file upload completed
           // const { userId } = JSON.parse(tokenPayload);
           // await db.update({ avatar: blob.url, userId });
-
-          await downloadFileD(url, "slice.webm");
+          const filename = "slice.webm";
+          await downloadFileD(url, filename);
+          const destination = path.resolve(`tmp/${filename}`);
           console.log('finished downloading file');
-          fs.readFile('tmp/slice.webm', (err: any, data: any) => {
+          fs.readFile(destination, (err: any, data: any) => {
             if (!err && data) {
               //console.log('data: ' + data);
             } else {
               console.log('err: ' + err);
             }
           });
-          const fileContent = fs.readFileSync(`tmp/slice.webm`);
+          const fileContent = fs.readFileSync(destination);
           //console.log(`finished reading file from /tmp/slice.wav, fileContent: ${fileContent}, ${JSON.stringify(fileContent)}`);
 
           const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
@@ -59,7 +60,7 @@ export async function GET(request: Request) {
           //console.log("ASKING WHISPER " + JSON.stringify(fileContent));
           try {
             const response = await openai.audio.transcriptions.create({
-              file: fs.createReadStream(`tmp/slice.webm`),
+              file: fs.createReadStream(destination),
               model: 'whisper-1',
             });
             //return response?.text
