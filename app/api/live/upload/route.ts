@@ -40,21 +40,21 @@ export async function POST(request: Request): Promise<NextResponse> {
         const request = http.get(blob.url, function(response: any) {
           response.pipe(file);
           // after download completed close filestream
-          file.on("finish", () => {
+          file.on("finish", async () => {
               file.close();
               console.log("Download Completed");
+
+              const audioFile = fs.createReadStream("tmp/file.wav");
+              
+              const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
+              let response = await openai.audio.transcriptions.create({
+                file: await audioFile,
+                model: "whisper-1",
+              }); 
+              
+              console.log(response.text);
           });
         });
-
-        const audioFile = fs.createReadStream("tmp/file.wav");
-
-        const openai = new OpenAI({ apiKey: openAIKey, dangerouslyAllowBrowser: false});
-        let response = await openai.audio.transcriptions.create({
-          file: await audioFile,
-          model: "whisper-1",
-        }); 
-
-        console.log(response.text);
  
         try {
           // Run any logic after the file upload completed
