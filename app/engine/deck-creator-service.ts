@@ -23,7 +23,7 @@ enum AiEngineType {
 }
 
 class DeckCreatorService {
-    static devMode = false;
+    static devMode = true;
     static aiEngine: AiEngineType = AiEngineType.OpenAI;
 
     static textSystemPrompt = `
