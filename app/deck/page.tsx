@@ -5,7 +5,7 @@ export default async function DeckPage({ searchParams }: { searchParams: { fileT
 
   const input = searchParams.fileText;
   console.log(input);
-  const deck = await LighthouseEngine.getDeckFromText(input);
+  const deck = (await LighthouseEngine.getDeckFromText(input)).plainObject();
 
   return (
     <main className="flex flex-col items-center justify-center p-24 gap-20">

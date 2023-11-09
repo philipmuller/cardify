@@ -15,6 +15,14 @@ export class Card {
         return new Card('', '');
     }
 
+    plainObject(): any {
+        return {
+            id: this.id,
+            front: this.front,
+            back: this.back
+        }
+    }
+
 }
   
 export class Deck {
@@ -30,6 +38,14 @@ export class Deck {
 
     static empty(): Deck {
         return new Deck([], '');
+    }
+
+    plainObject(): any {
+        return {
+            id: this.id,
+            title: this.title,
+            cards: this.cards.map(card => card.plainObject())
+        }
     }
     
 }

@@ -3,8 +3,13 @@ import { LighthouseEngine } from '@/app/engine/server-engine';
 import { FileType } from '@/app/model/file-type';
 import { Deck } from '@/app/model/card-model';
 import { CreateDeckParam, CreateDeckMode } from '@/app/model/comms-utils';
- 
+import { Logger } from '@/app/engine/logging-engine';
+
+
 export async function GET(request: Request) {
+    const lg = new Logger("api/deck/create").subprocess("GET");
+    lg.logCall([request]);
+    
     const { searchParams } = new URL(request.url);
 
     try {
@@ -24,8 +29,10 @@ export async function GET(request: Request) {
                     throw new Error("Invalid mode");
             }
 
+            //console.log("I AM IN THE GET REQUEST NDOIAODI " + JSON.stringify(deck));
+            //console.log("PLAIN VERSION  " + JSON.stringify(deck.plainObject()));
             return NextResponse.json(
-                { deck: deck},
+                { deck: deck.plainObject() },
                 { status: 200 },
             );
         }
