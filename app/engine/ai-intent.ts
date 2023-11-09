@@ -44,6 +44,25 @@ export class AIIntent {
         return new AIIntent(context);
     }
 
+    static createFlashcarDeckFromFile(): AIIntent {
+        const context = `
+            You are a flashcard generator.
+            You will find a file attached to the request.
+            Read, analyze and understand it. 
+            After that, create a title of what this file is about of maximum 5 words and create a series of flashcards that capture the key concepts from the file.
+            IMPORTANT: use only information from the file to create the flashcards, do not use any other information you might have about the topic.
+            Make sure to format your response in the following format:
+            \nTitle: /insert title here/
+            \nQ: /insert question here/
+            \nA: /insert answer here/
+            \n Do not include any text other than a title and a sequence of Q and A strings on separated lines. 
+            Do not describe what you are doing or understanding, just output the lines following the described formatting.`;
+
+        //Augment with template when using in longer threads
+
+        return new AIIntent(context);
+    }
+
     static generic(): AIIntent {
         const context = `You are a helpful assistant`;
 

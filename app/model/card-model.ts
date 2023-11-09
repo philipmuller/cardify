@@ -15,27 +15,6 @@ export class Card {
         return new Card('', '');
     }
 
-    static fromJSON(json: string): Card {
-        const data = JSON.parse(json);
-        const card = new Card(data.front, data.back, data.id);
-        return card;
-    }
-
-    toJSON(): string {
-        return JSON.stringify({
-            id: this.id,
-            front: this.front,
-            back: this.back
-        });
-    }
-
-    plainObject(): any {
-        return {
-            id: this.id,
-            front: this.front,
-            back: this.back
-        };
-    }
 }
   
 export class Deck {
@@ -49,26 +28,8 @@ export class Deck {
         this.id = id ?? uuidv4();
     }
 
-    static fromJSON(json: string): Deck {
-        const data = JSON.parse(json);
-        const cards = data.cards.map((cardData: any) => Card.fromJSON(JSON.stringify(cardData)));
-        const deck = new Deck(cards, data.title, data.id);
-        return deck;
+    static empty(): Deck {
+        return new Deck([], '');
     }
-
-    toJSON(): string {
-        return JSON.stringify({
-            cards: this.cards,
-            title: this.title,
-            id: this.id,
-        });
-    }
-
-    plainObject(): any {
-        return {
-            id: this.id,
-            title: this.title,
-            cards: this.cards.map((card: Card) => card.plainObject()),
-        };
-    }
+    
 }

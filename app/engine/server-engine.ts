@@ -4,6 +4,7 @@ import { AIEngine, OpenAIEngine, DemoAIEngine } from "./ai-engine";
 import { AIIntent } from "./ai-intent";
 import { DatabaseEngine, FirebaseEngine } from "./database-engine";
 import { FileEngine } from "./file-engine";
+import { FileType } from "../model/file-type";
 
 
 export abstract class LighthouseEngine {
@@ -30,20 +31,26 @@ export abstract class LighthouseEngine {
         return this.aiEngine.transcribe(file);
     }
 
-    static async getDeck(text?: string, audioURL?: URL, fileURL?: URL): Promise<Deck> {
-        if (text != null) {
-            return this.getDeckFromText(text);
-        } else if (audioURL != null) {
-            return this.getDeckFromAudio(audioURL);
-        } else if (fileURL != null) {
-            return this.getDeckFromFile(fileURL);
-        }
-
-        return new Deck([], "Empty Deck");
+    static async getDeckFromText(text: string): Promise<Deck> {
+        return this.getDeck(text, AIIntent.createFlashcarDeckFromText());
     }
 
-    private static async getDeckFromText(text: string): Promise<Deck> {
-        const deckString = await this.aiEngine.generateFrom(text, AIIntent.createFlashcarDeckFromText());
+    static async getDeckFromFile(url: string, fileType: FileType): Promise<Deck> {
+        console.log("!!! IMPORTANT CHECK. FileType: " + fileType);
+        const path = await this.donwloadFile(url, "temp." + Object.keys(FileType)[Object.values(FileType).indexOf(fileType)]);
+        const file = await this.readFile(path);
+
+        if (fileType == FileType.mp3 || fileType == FileType.wav || fileType == FileType.webm) {
+            const transcription = await this.getTranscription(file);
+            return await this.getDeck(transcription, AIIntent.createFlashcarDeckFromLiveAudioTranscription());
+        } else {
+            return await this.getDeck("", AIIntent.createFlashcarDeckFromFile(), file);
+        }
+
+    }
+
+    private static async getDeck(text: string, intent: AIIntent, file?: ReadStream): Promise<Deck> {
+        const deckString = await this.aiEngine.generateFrom(text, intent,);
         console.log("DECK STRING: " + deckString);
     
         var title: string = "";
@@ -77,14 +84,6 @@ export abstract class LighthouseEngine {
         }
         
         let deck: Deck = new Deck(cards, title);
-        return deck.plainObject();
-    }
-
-    private static async getDeckFromAudio(url: URL): Promise<Deck> {
-        return new Deck([], "Empty Deck"); // to implement
-    }
-
-    private static async getDeckFromFile(url: URL): Promise<Deck> {
-        return new Deck([], "Empty Deck"); // to implement
+        return deck;
     }
 }

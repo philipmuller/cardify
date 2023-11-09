@@ -2,13 +2,12 @@ import { AIIntent } from "./ai-intent";
 import { OpenAI } from "openai";
 import { openAIKey } from "@/keychain";
 import { ChatCompletion } from "openai/resources/chat/index.mjs";
-import { get } from "http";
 import { ReadStream } from "fs";
 
 //Classess that implement AIEngine can be used in cardybee
 
 export interface AIEngine {
-    generateFrom(text?: string, intent?: AIIntent): Promise<any>;
+    generateFrom(text: string, intent: AIIntent, file?: ReadStream): Promise<any>;
     transcribe(file: ReadStream): Promise<string>;
 }
 
@@ -18,7 +17,7 @@ export class OpenAIEngine implements AIEngine {
     model = "gpt-3.5-turbo";
     transcriptionModel = "whisper-1";
 
-    async generateFrom(text: string, intent?: AIIntent): Promise<string> {
+    async generateFrom(text: string, intent: AIIntent, file?: ReadStream): Promise<string> {
         intent = intent ?? AIIntent.generic()
 
         const response = await this.request(text, intent);
@@ -41,7 +40,7 @@ export class OpenAIEngine implements AIEngine {
         return transcription;
     }
 
-    private async request(user: string, intent: AIIntent): Promise<ChatCompletion> {
+    private async request(user: string, intent: AIIntent, file?: ReadStream): Promise<ChatCompletion> {
         var content = user;
 
         if (intent.promptTemplate != null) {
@@ -67,7 +66,7 @@ export class OpenAIEngine implements AIEngine {
 
 
 export class DemoAIEngine implements AIEngine {
-    async generateFrom(text: string, intent?: AIIntent): Promise<string> {
+    async generateFrom(text: string, intent: AIIntent, file?: ReadStream): Promise<string> {
         return this.generateMockStringDeck(8);
     }
 

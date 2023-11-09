@@ -1,5 +1,6 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
+import { FileType } from '@/app/model/file-type';
  
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
@@ -13,15 +14,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       ) => {
         return {
           allowedContentTypes: [
-            'audio/mpeg', 
-            'audio/wav', 
-            'audio/webm',
-            'video/webm',
-            'application/msword', 
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/pdf',
-            'application/vnd.ms-powerpoint',
-            'text/plain'
+            ...Object.values(FileType),
           ],
           tokenPayload: JSON.stringify({
             // optional, sent to your server on upload completion

@@ -10,10 +10,6 @@ import { LighthouseEngine } from "./server-engine";
 const fs = require('fs');
 const util = require('util');
 
-export async function getDeck(text: string, isAudioFile: boolean): Promise<Deck> {
-    return LighthouseEngine.getDeck(text);
-}
-
 enum AiEngineType {
     OpenAI,
     Anthropic
@@ -235,7 +231,7 @@ class DeckCreatorService {
         }
         
         let deck: Deck = new Deck(cards, title);
-        return deck.plainObject();
+        return deck;
       }
     
 }
