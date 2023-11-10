@@ -9,6 +9,7 @@ const login = () => {
     const loginEmailRef = useRef<HTMLInputElement>(null);
     const loginPasswordRef = useRef<HTMLInputElement>(null);
 
+    // maybe we can move it to engine
     const login = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -21,16 +22,14 @@ const login = () => {
                 
                 const user = userCredential.user;
                 console.log(user);
-                alert("Login successful");
+                alert("Login successful!");
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 alert(errorMessage);
             });
-
     }
-
 
     return (
         <center className="mt-8">
