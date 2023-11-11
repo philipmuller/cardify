@@ -6,6 +6,8 @@ import { DatabaseEngine, FirebaseEngine } from "./database-engine";
 import { FileEngine } from "./file-engine";
 import { FileType } from "../model/file-type";
 import { Logger } from "./logging-engine";
+import { CreateDeckParams, CreateDeckMode } from "../model/comms-utils";
+import { create } from "domain";
 
 
 export abstract class LighthouseEngine {
@@ -17,6 +19,78 @@ export abstract class LighthouseEngine {
     
     static auth() {
         //Implement authentication
+    }
+
+    //Comms ------------------
+    static async handleGetDeckRequest(params: CreateDeckParams ): Promise<Deck> {
+        const lg = this.logger.subprocess("handleGetDeckRequest");
+        lg.logCall([params]);
+
+        let deck = Deck.empty();
+        switch (params.mode) {
+            case CreateDeckParams.modes.text:
+                if (params.text == null) {
+                    const message = "Mode is text, but no text is specified";
+                    lg.log(message);
+                    throw new Error(message);
+                }
+                deck = await this.getDeckFromText(params.text);
+                break;
+            case CreateDeckParams.modes.file:
+                if (params.fileUrl == null || params.fileType == null) {
+                    const message = "Mode is file, but no file url and/or type is specified";
+                    lg.log(message);
+                    throw new Error(message);
+                }
+                deck = await this.getDeckFromFile(params.fileUrl, params.fileType);
+                break;
+            default:
+                const message = "Invalid mode";
+                lg.log(message);
+                throw new Error("Invalid mode");
+        }
+
+        lg.logReturn(deck);
+        return deck;
+    }
+
+    static createDeckParamsFrom(searchParams: URLSearchParams): CreateDeckParams {
+        const lg = this.logger.subprocess("createDeckParamsFrom");
+        lg.logCall([searchParams]);
+
+        const modeString = searchParams.get(CreateDeckParams.paramNames.mode);
+
+        if (modeString == null) {
+            lg.log("No mode specified");
+            throw new Error("No mode specified");
+        } else {
+            if (!(<any>Object).values(CreateDeckMode).includes(modeString)) {
+                lg.log("Invalid mode");
+                throw new Error("Invalid mode");
+            }
+            const mode = <CreateDeckMode> modeString;
+
+            const text = searchParams.get(CreateDeckParams.paramNames.text) ?? undefined;
+            const fileUrl = searchParams.get(CreateDeckParams.paramNames.fileUrl) ?? undefined;
+
+            const fileTypeString = searchParams.get(CreateDeckParams.paramNames.fileType) ?? undefined;
+            if (!(<any>Object).values(FileType).includes(fileTypeString)) {
+                lg.log("Invalid file type");
+                throw new Error("Invalid file type");
+            }
+            const fileType = <FileType> fileTypeString;
+
+            const returnValue = new CreateDeckParams(
+                mode, 
+                { 
+                    text: text, 
+                    fileUrl: fileUrl, 
+                    fileType: fileType
+                }
+            );
+            lg.logReturn(returnValue);
+            return returnValue;
+        }
     }
 
     //File management ---------
@@ -82,7 +156,7 @@ export abstract class LighthouseEngine {
         const lg = this.logger.subprocess("(private) getDeck");
         lg.logCall([text, intent, file]);
 
-        const deckString = await this.aiEngine.generateFrom(text, intent,);
+        const deckString = await this.aiEngine.generateFrom(text, intent, file);
         console.log("DECK STRING: " + deckString);
     
         var title: string = "";

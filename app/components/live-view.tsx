@@ -4,13 +4,8 @@ import { Card, Deck } from "../model/card-model";
 import CardBrowser from "./card-browser";
 import { useState, useEffect, useRef } from "react";
 import { Record, Pause } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
-import { type PutBlobResult } from '@vercel/blob';
-import { upload } from '@vercel/blob/client';
-import { blob } from "stream/consumers";
-import { title } from "process";
 import { FileType } from "../model/file-type";
-import { CreateDeckMode, CreateDeckParam } from "../model/comms-utils";
+import { LanternEngine } from "../engine/client-engine";
 
 export default function LiveView() {
 
@@ -41,17 +36,8 @@ export default function LiveView() {
 
                 const audioBlob = new Blob(chunks, { type: FileType.webm });
 
-                const newBlob = await upload("slice.webm", audioBlob, {
-                   access: 'public',
-                   handleUploadUrl: '/api/file/upload',
-                });
-                console.log("New blob: " + JSON.stringify(newBlob));
-                
-                const response = await fetch('/api/deck/create?' + new URLSearchParams({
-                    'mode': CreateDeckMode.file,
-                    'fileUrl': newBlob.url,
-                    'fileType': FileType.webm,
-                }))
+                const uploadedFileUrl = await LanternEngine.uploadFile(audioBlob, FileType.webm);
+                const response = await LanternEngine.getDeckFromLiveRecording(uploadedFileUrl);
 
                 const json = await response.json();
                 const deck = json.deck as Deck;

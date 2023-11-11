@@ -32,14 +32,21 @@ export class Logger {
     logCall(values: any[]) {
         var message = this.processName + ": called!"
         for (let i=0; i<values.length; i++) {
-            const value = values[i];
+            let value = values[i];
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
             message += "\n-----" + i + "-- " + this.truncate(value);
         }
         console.log("\n" + message);
     }
 
     logFunctionReturn(functionName: string, returnValue: any) {
-        console.log("\n" + this.processName + " > " + functionName + ": returned!\n-----value-- " + this.truncate(returnValue));
+        let value = returnValue;
+        if (typeof value === "object") {
+            value = JSON.stringify(value);
+        }
+        console.log("\n" + this.processName + " > " + functionName + ": returned!\n-----value-- " + this.truncate(value));
     }
 
     logReturn(returnValue: any) {
@@ -49,9 +56,9 @@ export class Logger {
     truncate(value: any): string {
         const stringValue = String(value);
         if (Logger.truncateLong && stringValue.length > Logger.truncateLength) {
-            return value.substring(0, Logger.truncateLength) + "...";
+            return stringValue.substring(0, Logger.truncateLength) + "...";
         } else {
-            return value;
+            return stringValue;
         }
     }
 }

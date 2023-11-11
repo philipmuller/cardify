@@ -1,6 +1,9 @@
 import { ReadStream } from "fs";
+import { Logger } from "./logging-engine";
 
 export abstract class FileEngine {
+
+    private static logger: Logger = new Logger("FileEngine");
 
     static storagePath: string = "/tmp/";
 

@@ -29,7 +29,7 @@ export class OpenAIEngine implements AIEngine {
 
         intent = intent ?? AIIntent.generic()
 
-        const response = await this.assistantRequest(text, intent);
+        const response = await this.assistantRequest(text, intent, file);
 
         lg.logReturn(response);
         return response;
@@ -62,8 +62,12 @@ export class OpenAIEngine implements AIEngine {
         const thread = await this.openai.beta.threads.create();
         lg.log("Thread created: " + thread.id);
 
+        let fileId: string | undefined = undefined;
+        if (file != null && file != undefined) {
+            fileId = await this.uploadFile(file);
+        }
         //Add messages to thread
-        if (intent.prependMessage) { await this.addMessage(intent.prependMessage, thread.id) }
+        if (intent.prependMessage) { await this.addMessage(intent.prependMessage, thread.id, fileId) }
         await this.addMessage(text, thread.id);
         if (intent.appendMessage) { await this.addMessage(intent.appendMessage, thread.id) }
 
@@ -74,6 +78,19 @@ export class OpenAIEngine implements AIEngine {
 
         lg.logReturn(response ?? "");
         return response ?? "";
+    }
+
+    private async uploadFile(file: ReadStream): Promise<string> {
+        const lg = this.logger.subprocess("uploadFile");
+        lg.logCall([file]);
+
+        const oaFile = await this.openai.files.create({
+            file: file,
+            purpose: "assistants",
+        });
+
+        lg.logReturn(oaFile.id);
+        return oaFile.id;
     }
 
     private async manageRun(runId: string, threadId: string): Promise<string | null> {
@@ -152,12 +169,17 @@ export class OpenAIEngine implements AIEngine {
         return run;
     }
 
-    private async addMessage(content: string, threadId: string): Promise<ThreadMessage> {
+    private async addMessage(content: string, threadId: string, fileId?: string): Promise<ThreadMessage> {
+        let fileIds: string[] = [];
+        if (fileId != null && fileId != undefined) {
+            fileIds.push(fileId);
+        }
         const message = await this.openai.beta.threads.messages.create(
             threadId,
             {
               role: "user",
-              content: content
+              content: content,
+              file_ids: fileIds,
             }
         );
 

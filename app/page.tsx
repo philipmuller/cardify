@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { DragEventHandler, useState } from "react";
 import { motion } from "framer-motion";
 import ConvertApi from "convertapi-js";
 import { useRouter, useSearchParams} from 'next/navigation';
@@ -9,6 +8,8 @@ import { ArrowSquareDown, Command, Record } from "@phosphor-icons/react";
 import { useDetectPaste } from "./hooks/use-paste";
 import { usePointerCoords } from "./hooks/use-pointer-coords";
 import { useDropFile } from "./hooks/use-drop-file";
+import { LanternEngine } from "./engine/client-engine";
+import { FileType } from "./model/file-type";
 
 
 export default function Home() {
@@ -17,15 +18,6 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams()!;
   const [ isStartingShortcut ] = useDetectPaste(handlePaste);
-  
-  async function handlePaste() {
-    try {
-      const text = await navigator.clipboard.readText();
-      router.push("/deck" + '?' + createQueryString("fileText", text));
-    } catch (err) {
-      console.log('Failed to read clipboard data.');
-    }
-  }
 
   function createQueryString(name: string, value: string): string {
       const params = new URLSearchParams(searchParams)
@@ -42,44 +34,34 @@ export default function Home() {
 
   const finalSwatches: [string] = [""];//"to-amber-50 dark:to-amber-950", "to-orange-50 dark:to-orange-950", "to-red-50 dark:to-red-950"];
 
-  const variants = {
-    initial: { opacity: 0 },
-    hover: { opacity: 1 }
-  };
+  async function handlePaste() {
+    try {
+      const text = await navigator.clipboard.readText();
+      router.push(LanternEngine.constructNewDeckUrlFromText(text));
+    } catch (err) {
+      console.log('Failed to read clipboard data.');
+    }
+  }
 
   async function handleDrop(e: any) {
     e.preventDefault();
     e.stopPropagation();
     console.log("File has been dropped");
     if (e.dataTransfer.files[0]) {
-      const convertApi = ConvertApi.auth({ apiKey: "111029228", token: "r2mjY2uK"});
-      let params = convertApi.createParams();
+      //const convertApi = ConvertApi.auth({ apiKey: "111029228", token: "r2mjY2uK"});
+      //let params = convertApi.createParams();
       //const convertapi = require('convertapi')(convertAPISecret);
       const file = e.dataTransfer.files[0];
       console.log(file);
 
-      params.add('file', file);
-      let result = await convertApi.convert("pdf", "txt", params);
+      //params.add('file', file);
+      //let result = await convertApi.convert("pdf", "txt", params);
 
-      let url = result.files[0].Url;
-      console.log(url);
+      //let url = result.files[0].Url;
+      //console.log(url);
 
-      fetch(url).then(function(response) {
-        response.text().then(function(text) {
-          router.push("/deck" + '?' + createQueryString("fileText", text));
-        });
-  });
-    }
-  }
-
-  function handleChange(e: any) {
-    e.preventDefault();
-    console.log("File has been added");
-    if (e.target.files && e.target.files[0]) {
-      for (let i = 0; i < e.target.files["length"]; i++) {
-        console.log(e.dataTransfer.files[i]);
-        //setFiles((prevState: any) => [...prevState, e.target.files[i]]);
-      }
+      const uploadedFileUrl = await LanternEngine.uploadFile(file, FileType.pdf);
+      router.push(LanternEngine.constructNewDeckUrlFromFile(uploadedFileUrl, FileType.pdf));
     }
   }
 
@@ -92,10 +74,8 @@ export default function Home() {
       <input
         placeholder="fileInput"
         className="hidden"
-        //ref={inputRef}
         type="file"
         multiple={true}
-        //onChange={handleChange}
         accept=".xlsx,.xls,image/*,.doc, .docx,.ppt, .pptx,.txt,.pdf"
       />
       <div className="flex -space-x-32">
