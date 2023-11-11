@@ -174,6 +174,9 @@ export class OpenAIEngine implements AIEngine {
     }
 
     private async addMessage(content: string, threadId: string, fileId?: string): Promise<ThreadMessage> {
+        const lg = this.logger.subprocess("addMessage");
+        lg.logCall([content, threadId, fileId]);
+
         let fileIds: string[] = [];
         if (fileId != null && fileId != undefined) {
             fileIds.push(fileId);
@@ -187,6 +190,7 @@ export class OpenAIEngine implements AIEngine {
             }
         );
 
+        lg.logReturn(message);
         return message;
     }
 
