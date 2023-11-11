@@ -1,15 +1,15 @@
 {
     "functions": {
-        "api/deck/create/route.ts": {
+        "app/api/deck/create/route.ts": {
             "maxDuration": 120
         },
-        "api/file/upload/route.ts": {
+        "app/api/file/upload/route.ts": {
             "maxDuration": 120
         },
-        "api/file/transcribe/route.ts": {
+        "app/api/file/transcribe/route.ts": {
             "maxDuration": 120
         },
-        "deck/page.tsx": {
+        "app/deck/page.tsx": {
             "maxDuration": 120
         }
     }

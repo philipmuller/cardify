@@ -195,10 +195,14 @@ export class OpenAIEngine implements AIEngine {
     }
 
     private async request(text: string, intent: AIIntent, file?: ReadStream): Promise<ChatCompletion> {
+        const lg = this.logger.subprocess("request");
+        lg.logCall([text, intent, file]);
+
         var content = text;
 
         content = intent.prependMessage ?? "" + content + intent.appendMessage ?? "";
 
+        lg.logReturn(content);
         return await this.openai.chat.completions.create({
             messages: [
               {
