@@ -11,7 +11,7 @@ import { create } from "domain";
 
 
 export abstract class LighthouseEngine {
-    private static demoMode: boolean = true; //demo mode disables AI calls and replaces them with static responses
+    private static demoMode: boolean = false; //demo mode disables AI calls and replaces them with static responses
     private static logger: Logger = new Logger("LighthouseEngine");
 
     private static aiEngine: AIEngine = this.demoMode ? new DemoAIEngine() : new OpenAIEngine();
