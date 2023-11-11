@@ -158,6 +158,9 @@ export class OpenAIEngine implements AIEngine {
     }
 
     private async startRun(threadId: string, intent: AIIntent, assistantId?: string): Promise<Run> { //if no assistantId is provided, the general assistant is used
+        const lg = this.logger.subprocess("startRun");
+        lg.logCall([threadId, intent, assistantId]);
+
         const run = await this.openai.beta.threads.runs.create(
             threadId,
             { 
@@ -166,6 +169,7 @@ export class OpenAIEngine implements AIEngine {
             }
         );
 
+        lg.logReturn(run);
         return run;
     }
 
