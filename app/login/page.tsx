@@ -4,7 +4,7 @@ import React, { FormEvent, useRef } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../engine/firebase";
 
-const login = () => {
+export default function Login() {
 
     const loginEmailRef = useRef<HTMLInputElement>(null);
     const loginPasswordRef = useRef<HTMLInputElement>(null);
@@ -46,5 +46,3 @@ const login = () => {
         </center>
     );
 }
-
-export default login;

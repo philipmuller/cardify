@@ -5,7 +5,7 @@ import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } f
 import { auth } from "../engine/firebase";
 
 
-const signup = () => {
+export default function Signup() {
 
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -73,5 +73,3 @@ const signup = () => {
         </center>
     );
 }
-
-export default signup;
