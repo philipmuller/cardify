@@ -41,6 +41,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.6"
+    "@types/uuid": "^9.0.6",
+    "encoding": "^0.1.13"
   }
 }
