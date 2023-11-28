@@ -1,14 +1,11 @@
 "use client"
 
-import { Card } from "../model/card-model";
-import { getDeck } from "../engine/deck-creator-service";
+import { Card, Deck } from "../model/card-model";
 import CardBrowser from "./card-browser";
 import { useState, useEffect, useRef } from "react";
 import { Record, Pause } from "@phosphor-icons/react";
-import { motion } from "framer-motion";
-import { type PutBlobResult } from '@vercel/blob';
-import { upload } from '@vercel/blob/client';
-import { blob } from "stream/consumers";
+import { FileType } from "../model/file-type";
+import { LanternEngine } from "../engine/client-engine";
 
 export default function LiveView() {
 
@@ -37,25 +34,14 @@ export default function LiveView() {
                 var chunks: Blob[] = [];
                 chunks.push(event.data);
 
-                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-                var audioFile = new File([audioBlob], "slice.webm");
+                const audioBlob = new Blob(chunks, { type: FileType.webm });
 
-                const newBlob = await upload("slice.webm", audioBlob, {
-                    access: 'public',
-                    handleUploadUrl: '/api/file/upload',
-                });
-                console.log("New blob: " + JSON.stringify(newBlob));
-
-                const response = await fetch('/api/file/transcribe?' + new URLSearchParams({
-                    'url': newBlob.url,
-                }))
+                const uploadedFileUrl = await LanternEngine.uploadFile(audioBlob, FileType.webm);
+                const response = await LanternEngine.getDeckFromLiveRecording(uploadedFileUrl);
 
                 const json = await response.json();
-                console.log("JSON: " + JSON.stringify(json));
+                const deck = json.deck as Deck;
 
-                console.log(`Transcription: ${json.transcription}`);
-
-                const deck = await getDeck(json.transcription, false);
                 setCards((oldCards) => [...oldCards, ...deck.cards]);
 
                 try {
