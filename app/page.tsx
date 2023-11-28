@@ -5,18 +5,31 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, motionValue } from "framer-motion";
 import ConvertApi from "convertapi-js";
 import { convertAPISecret } from "@/keychain";
-import { useRouter, useSearchParams} from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowSquareDown, Command, Record } from "@phosphor-icons/react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "./engine/firebase";
 
 
 export default function Home() {
   const [cardNr, setCardNr] = useState(3);
-  const [coords, setCoords] = useState({x: 0, y: 0});
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [isHoveringFile, setIsHoveringFile] = useState(false);
   const [isPressingCommand, setIsPressingCommand] = useState(false);
 
   const router = useRouter();
   const searchParams = useSearchParams()!;
+
+  // check if user is logged in
+  useEffect(() => onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      //do whatever
+    } else {
+      // User is signed out
+      console.log("User is signed out.")
+    }
+  }))
 
   useEffect(() => {
     const handleWindowMouseMove = (event: { clientX: any; clientY: any; }) => {
@@ -24,7 +37,7 @@ export default function Home() {
 
       const centerX = width / 2;
       const centerY = height / 2;
-      
+
       //absolute distance from center
       const distX = centerX - event.clientX;
       const distY = centerY - event.clientY;
@@ -90,7 +103,7 @@ export default function Home() {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams)
       params.set(name, value)
- 
+
       return params.toString()
     },
     [searchParams]
@@ -134,7 +147,7 @@ export default function Home() {
     e.stopPropagation();
     console.log("File has been dropped");
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const convertApi = ConvertApi.auth({ apiKey: "111029228", token: "r2mjY2uK"});
+      const convertApi = ConvertApi.auth({ apiKey: "111029228", token: "r2mjY2uK" });
       let params = convertApi.createParams();
       //const convertapi = require('convertapi')(convertAPISecret);
       const file = e.dataTransfer.files[0];
@@ -146,11 +159,11 @@ export default function Home() {
       let url = result.files[0].Url;
       console.log(url);
 
-      fetch(url).then(function(response) {
-        response.text().then(function(text) {
+      fetch(url).then(function (response) {
+        response.text().then(function (text) {
           router.push("/deck" + '?' + createQueryString("fileText", text));
         });
-  });
+      });
     }
   }
 
@@ -165,7 +178,7 @@ export default function Home() {
     }
   }
 
-  
+
 
   return (
     <form className="flex-grow flex flex-col items-center justify-center" onDragEnter={handleDragEnter} onDragLeave={handleDragExit} onDrop={handleDrop} onDragOver={handleDragOver}>
@@ -180,48 +193,48 @@ export default function Home() {
       />
       <div className="flex -space-x-32">
         {Array.from({ length: cardNr }).map((_, idx) => (
-          <motion.div 
-          key={idx}
-          className={`bg-gradient-to-r from-white dark:from-[#2E2A29] to-transparent dark:to-transparent ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4 `}
-          initial={{ y: offsetsY[idx], zIndex: idx+50 }}
-          whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx]+(coords.y/(31-(10*idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx]+(coords.x/(31-(10*idx))), zIndex: idx+50}}
-          whileHover={{ scale: 1.07 }}
-          transition={{ type: "spring", stiffness: isHoveringFile || isPressingCommand ? 100 : 50, damping: isHoveringFile || isPressingCommand ? 10 : 20, duration: isHoveringFile || isPressingCommand ? 0.1 : 1.0}}
+          <motion.div
+            key={idx}
+            className={`bg-gradient-to-r from-white dark:from-[#2E2A29] to-transparent dark:to-transparent ${finalSwatches[idx]} bg-cover rounded-5xl w-100 h-130 text-black drop-shadow-2xl p-4 `}
+            initial={{ y: offsetsY[idx], zIndex: idx + 50 }}
+            whileInView={{ y: isHoveringFile || isPressingCommand ? fileOffsetsY[idx] : offsetsY[idx] + (coords.y / (31 - (10 * idx))), x: isHoveringFile || isPressingCommand ? fileOffsetsX[idx] : offsetsX[idx] + (coords.x / (31 - (10 * idx))), zIndex: idx + 50 }}
+            whileHover={{ scale: 1.07 }}
+            transition={{ type: "spring", stiffness: isHoveringFile || isPressingCommand ? 100 : 50, damping: isHoveringFile || isPressingCommand ? 10 : 20, duration: isHoveringFile || isPressingCommand ? 0.1 : 1.0 }}
           />
         ))}
       </div>
       <div className="grid grid-cols-3 gap-4 mt-28 ">
 
         <motion.div layout className="flex flex-col items-center p-8 -z-10"
-        whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 290 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isPressingCommand ? 0 : 1}}
-        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-          <ArrowSquareDown size={48} className="mt-1 mb-1.5 text-stone-400 dark:text-stone-500"/>
+          whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 290 : 0, scale: isHoveringFile ? 2 : 1, opacity: isPressingCommand ? 0 : 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2 }}>
+          <ArrowSquareDown size={48} className="mt-1 mb-1.5 text-stone-400 dark:text-stone-500" />
           <p className="text-lg text-stone-400 dark:text-stone-500">Drop any file</p>
 
         </motion.div>
 
-        <motion.div layout className="flex flex-col items-center p-8 -z-5" 
-        whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -10 : 0, scale: isPressingCommand ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
-        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
+        <motion.div layout className="flex flex-col items-center p-8 -z-5"
+          whileInView={{ y: isPressingCommand ? -600 : 0, x: isPressingCommand ? -10 : 0, scale: isPressingCommand ? 2 : 1, opacity: isHoveringFile ? 0 : 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2 }}>
           <div className="flex flex-row items-center">
             <Command className="text-stone-400 dark:text-stone-500" size={48} />
             <h1 className={`text-4xl text-stone-400 dark:text-stone-500 ${isPressingCommand ? "opacity-40" : "opacity-100"}`}>V</h1>
           </div>
           <p className="text-lg text-stone-500">Paste any text</p>
         </motion.div>
-        
-        <motion.div layout className="flex flex-col items-center p-8 hover:bg-blue z-5" 
-        whileInView={{ opacity: isPressingCommand || isHoveringFile ? 0 : 1}}
-        transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
+
+        <motion.div layout className="flex flex-col items-center p-8 hover:bg-blue z-5"
+          whileInView={{ opacity: isPressingCommand || isHoveringFile ? 0 : 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2 }}>
           <Link href="/live" className="text-4xl text-stone-400 dark:text-stone-500 flex flex-row items-center">
-              <Record size={28} className="text-stone-400 dark:text-stone-500" weight="fill"/>
-              Live
+            <Record size={28} className="text-stone-400 dark:text-stone-500" weight="fill" />
+            Live
           </Link>
           <p className="text-lg text-stone-400 dark:text-stone-500">Record any lecture</p>
         </motion.div>
-        
-        
-        
+
+
+
       </div>
     </form>
   );
