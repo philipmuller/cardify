@@ -4,7 +4,6 @@ import React, { FormEvent, FormEventHandler, MouseEvent, useRef } from "react";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth } from "../engine/firebase";
 
-
 export default function Signup() {
 
     const emailRef = useRef<HTMLInputElement>(null);
@@ -22,7 +21,7 @@ export default function Signup() {
             .then((userCredential) => {
                 // Signed up 
                 const user = userCredential.user;
-                alert("Sign up successful!")
+                alert("You signed up successfully!")
 
             })
             .catch((error) => {
