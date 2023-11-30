@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className={`${hk.className} overflow-x-hidden`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="flex flex-col fixed h-screen overflow-y-auto w-screen bg-stone-50 dark:bg-stone-900">
-            <nav className="flex justify-between items-center p-4 bg-transparent fixed w-screen">
+            <nav className="flex justify-between items-center p-4 bg-transparent fixed w-screen z-[1000]">
               <span className="text-2xl font-semibold text-stone-800 dark:text-stone-200">
                 <Link href={{ pathname: "/" }}>Cardybee</Link>
               </span>

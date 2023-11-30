@@ -62,12 +62,12 @@ const config: Config = {
       },
 
       width: {
-        '100': '20rem',
+        '100': '19rem',
         '130': '28rem',
       },
       height: {
-        '100': '20rem',
-        '130': '28rem',
+        '100': '19rem',
+        '130': '27rem',
       },
       animation: {
         'gradient-x':'gradient-x 15s ease infinite',
