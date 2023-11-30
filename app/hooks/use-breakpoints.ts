@@ -15,6 +15,8 @@ export function useBreakpoints(): Breakpoint {
     const isXl = useMediaQuery({ query: `(min-width: 1280px)` });
     const isTwoxl = useMediaQuery({ query: `(min-width: 1536px)` });
 
+    console.log(isSm, isMd, isLg, isXl, isTwoxl);
+
     if (isTwoxl) return Breakpoint.twoxl;
     if (isXl) return Breakpoint.xl;
     if (isLg) return Breakpoint.lg;

@@ -6,6 +6,7 @@ import { Card } from "../model/card-model";
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import CardComponent from "./card-component";
 import ExpandIcon from "@/app/icons/expand-icon";
+import { useBreakpoints, Breakpoint } from "../hooks/use-breakpoints";
 
 export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMode?: boolean}) {
     const carouselItemSize = 3;
@@ -14,6 +15,10 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     const [isFlipped, setIsFlipped] = useState(false);
     const accumulatedDeltaY = useRef(0);
     const accumulatedDeltaX = useRef(0);
+
+    const breakpoint = useBreakpoints();
+
+    const isMobile = breakpoint == Breakpoint.sm;
     
 
     useEffect(() => {
@@ -219,11 +224,13 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
 
     function carouselElement(idx: number, card: Card) {
         if (idx < carouselItemSize || idx >= cards.length + carouselItemSize) {
-            return (<div className="w-100 h-130 invisible"/>);
+            return (<CardComponent isPlaceholder={true} breakpoint={breakpoint}/>);
         } else {
             return (
-                <CardComponent 
-                    card={card} 
+                <CardComponent
+                    isPlaceholder={false}
+                    breakpoint={breakpoint}
+                    card={card}
                     fade={calculateCardFade(idx)} 
                     expanded={isExpanded && idx==currentIdx} 
                     flipped={isFlipped && idx==currentIdx}
@@ -235,7 +242,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
 
     return (
     <>
-    <div className="flex items-center content-center justify-center justify-items-center -space-x-32">
+    <div className="flex items-center content-center justify-center justify-items-center -space-x-36 md:-space-x-60">
         {generateCarouselDeck().map((card, idx) => {
             if (idx <= upperLimit() && idx >= lowerLimit()) {
                 return (
