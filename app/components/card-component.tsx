@@ -41,6 +41,9 @@ export default function CardComponent({ card, fade, expanded, flipped, onClick}:
 
     return (
       <>
+      {/* <div className="h-80 w-80 lg:h-[45vh] lg:w-[45vh] min-h-[18rem] min-w-[18rem] max-h-[27rem] max-w-[27rem] aspect-square flex items-center justify-center">
+        
+      </div> */}
         <motion.div
         className={`bg-white dark:bg-[#23201F] rounded-5xl text-stone-700 dark:text-stone-200 font-normal flex text-xl overflow-hidden flip-card-inner shadow-[0_4px_43px_32px_rgba(206,206,206,0.25)] dark:shadow-[0_4px_43px_32px_rgba(28,25,23,0.4)] p-12`}
         key={card.id}
