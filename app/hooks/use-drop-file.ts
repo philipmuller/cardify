@@ -1,21 +1,21 @@
-import { useState } from "react";
+import { useState, DragEvent } from "react";
 
-export function useDropFile(effect: (e: any) => void): [boolean, { enter: (e: any) => void, exit: (e: any) => void, over: (e: any) => void, drop: (e: any) => void}] {
+export function useDropFile(effect: (e: any) => void): [boolean, { enter: (e: DragEvent) => void, exit: (e: DragEvent) => void, over: (e: DragEvent) => void, drop: (e: DragEvent) => void}] {
     const [isHoveringFile, setIsHoveringFile] = useState(false);
 
-    function handleDragEnter(e: any) {
+    function handleDragEnter(e: DragEvent) {
         e.preventDefault();
         e.stopPropagation();
         setIsHoveringFile(true);
       }
     
-      function handleDragExit(e: any) {
+      function handleDragExit(e: DragEvent) {
         e.preventDefault();
         e.stopPropagation();
         setIsHoveringFile(false);
       }
     
-      function handleDragOver(e: any) {
+      function handleDragOver(e: DragEvent) {
         e.preventDefault();
         e.stopPropagation();
         setIsHoveringFile(true);
