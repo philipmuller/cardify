@@ -9,11 +9,11 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
 
     const isMobile = () => { return (breakpoint == Breakpoint.sm) };
 
-    const iconSize = isMobile() ? 36 : 46;
+    const iconSize = isMobile() ? 28 : 46;
     return (
-        <div className="flex flex-row justify-center gap-4 basis-1/4 px-5 fixed w-full bottom-20 md:bottom-0 md:relative text-base md:text-xl text-stone-400 dark:text-stone-500 text-center">
+        <div className="flex flex-row justify-center gap-4 basis-1/4 px-5 fixed w-full bottom-20 md:bottom-0 md:relative text-sm md:text-xl text-stone-400 dark:text-stone-500 text-center px-14">
 
-        <motion.button layout className="flex flex-col items-center justify-center p-1 w-36 max-h-28 gap-1"
+        <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
         whileInView={{ y: isHoveringFile ? -600 : 0, x: isHoveringFile ? 290 : 0, scale: isHoveringFile ? 2 : 1 , opacity: isStartingShortcut ? 0 : 1}}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
           {isMobile() ?
@@ -22,7 +22,7 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
           <p>{isMobile() ? "Select file" : "Drop file"}</p>
         </motion.button>
 
-        <motion.button layout className="flex flex-col items-center justify-center p-1 w-36 max-h-28 gap-1" 
+        <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1" 
         whileInView={{ y: isStartingShortcut ? -600 : 0, x: isStartingShortcut ? -10 : 0, scale: isStartingShortcut ? 2 : 1 , opacity: isHoveringFile ? 0 : 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
           <div className="flex flex-row items-center">
@@ -34,10 +34,10 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
           <p>Paste text</p>
         </motion.button>
         
-        <motion.div layout className="flex flex-col items-center justify-center p-1 w-36 max-h-28 gap-1" 
+        <motion.div layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28" 
         whileInView={{ opacity: isStartingShortcut || isHoveringFile ? 0 : 1}}
         transition={{ type: "spring", stiffness: 100, damping: 30, duration: 0.2}}>
-          <Link href="/live" className="w-full h-full items-center justify-center flex flex-col">
+          <Link href="/live" className="w-full h-full items-center justify-center flex flex-col gap-1">
             <Microphone size={iconSize} className="text-stone-400 dark:text-stone-500" weight="regular" />
             <p>Record</p>
           </Link>
