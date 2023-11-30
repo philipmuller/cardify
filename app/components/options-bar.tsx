@@ -10,7 +10,7 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
     const isMobile = () => { return (breakpoint == Breakpoint.sm) };
 
     const iconSize = isMobile() ? 28 : 46;
-    const activeOffset = -screenHeight/1.5;
+    const activeOffset = -screenHeight/1.3;
 
     const yOffset = (trigger: boolean) => { return trigger? activeOffset : 0};
 
