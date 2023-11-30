@@ -23,18 +23,20 @@ export function PreviewDisplay({ state }: { state: PreviewDisplayState}) {
     const isMobile = () => { return (breakpoint == Breakpoint.sm) };
 
     //number of cards to display
-    const numCards = isMobile() ? 4 : 3;
+    const numCards = 3;
 
     //Desktop Card spacing
-    const cardSpacingDesktop = 120; //spacing when displaying (desktop only)
-    const hintCardSpacingDesktop = 240; //spacing when hinting (desktop only)
+    const cardSpacingDesktop = 240; //spacing when displaying (desktop only)
+    const hintCardSpacingDesktop = 360; //spacing when hinting (desktop only)
+
+    const cardSpacingMobile = 360; //spacing when displaying (mobile only)
 
     const xOffsetsDesktop = [cardSpacingDesktop, 0, -cardSpacingDesktop];
     const hintXOffsetsDesktop = [hintCardSpacingDesktop, 0, -hintCardSpacingDesktop];
 
     //Mobile Card spacing
-    const xOffsetsMobile = [180, -50, 60, -100];
-    const yOffsetsMobile = [0, -40, 30];
+    const xOffsetsMobile = [cardSpacingMobile, 0, -cardSpacingMobile, -100];
+    const yOffsetsMobile = [0, 0, 0];
 
     //Desktop Vertical positioning
     const topPadding = [100, 0, 0];
@@ -104,7 +106,7 @@ export function PreviewDisplay({ state }: { state: PreviewDisplayState}) {
     };
     
     return (
-        <div className="flex flex-col gap-10 md:gap-0 md:flex-row justify-center items-center basis-3/4 pt-20 pb-10">
+        <div className="flex flex-row justify-center items-center basis-3/4 pt-20 pb-10">
             {displayCards()}
         </div>
     );
