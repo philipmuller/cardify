@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useCallback } from "react";
 import PreviewCard from "./preview-card";
 import { usePointerCoords } from "../hooks/use-pointer-coords";
-import { useBreakpoints, Breakpoint } from "../hooks/use-breakpoints";
+import { Breakpoint } from "../hooks/use-breakpoints";
 
 export enum PreviewDisplayState {
     display,
@@ -12,12 +12,9 @@ export enum PreviewDisplayState {
     loading
 }
 
-export function PreviewDisplay({ state }: { state: PreviewDisplayState}) {
+export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplayState, breakpoint: Breakpoint}) {
     //mouse pointer coordinates
     const coords = usePointerCoords();
-
-    //breakpoints
-    const breakpoint = useBreakpoints();
 
     const isHinting = () => { return (state == PreviewDisplayState.hint) };
     const isMobile = () => { return (breakpoint == Breakpoint.sm) };
@@ -29,7 +26,7 @@ export function PreviewDisplay({ state }: { state: PreviewDisplayState}) {
     const cardSpacingDesktop = 240; //spacing when displaying (desktop only)
     const hintCardSpacingDesktop = 360; //spacing when hinting (desktop only)
 
-    const cardSpacingMobile = 360; //spacing when displaying (mobile only)
+    const cardSpacingMobile = 295; //spacing when displaying (mobile only)
 
     const xOffsetsDesktop = [cardSpacingDesktop, 0, -cardSpacingDesktop];
     const hintXOffsetsDesktop = [hintCardSpacingDesktop, 0, -hintCardSpacingDesktop];
