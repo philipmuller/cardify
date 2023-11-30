@@ -7,7 +7,9 @@ import { Hanken_Grotesk } from "next/font/google";
 import { ThemeProvider } from "./theme-provider";
 import { ThemeSwitcher } from "./theme-switcher";
 import { useRouter } from "next/navigation";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import firebase, { auth } from "./engine/firebase";
 
 const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
@@ -22,10 +24,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
 
+  const [buttonText, setButtonText] = useState("Log in");
+  // check if user is logged in
+  useEffect(() => onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setButtonText("Log out")
+    } else {
+      // User is signed out
+      console.log("User is signed out.")
+      setButtonText("Log in")
+    }
+  }))
+
+
   const router = useRouter();
 
   const goToLogIn = (e: MouseEvent<HTMLButtonElement>) => {
     router.push('/login');
+  }
+
+  const logOut = (e: MouseEvent<HTMLButtonElement>) => {
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      alert("Logged out successfully!");
+      router.push('/');
+    }).catch((error) => {
+      alert(error)
+    });
   }
 
   return (
@@ -40,7 +66,7 @@ export default function RootLayout({
               </span>
               <div className="flex flex-row gap-10">
                 <ThemeSwitcher />
-                <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded" onClick={goToLogIn}>Log In</button>
+                <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded" onClick={buttonText === "Log in" ? goToLogIn : logOut}>{buttonText}</button>
               </div>
             </nav>
             {children}
