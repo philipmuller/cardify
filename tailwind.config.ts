@@ -63,7 +63,7 @@ const config: Config = {
 
       width: {
         '100': '19rem',
-        '130': '28rem',
+        '130': '27rem',
       },
       height: {
         '100': '19rem',

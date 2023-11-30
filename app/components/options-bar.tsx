@@ -17,8 +17,7 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
     const transition = { type: "spring", stiffness: 100, damping: 30, duration: 0.2};
 
     return (
-        <div className={`flex flex-row justify-center gap-4 basis-1/4 px-5 fixed w-full bottom-10 ${isHoveringFile || isStartingShortcut ? 'md:fixed md:-bottom-20' : 'md:relative'} text-sm md:text-xl text-stone-400 dark:text-stone-500 text-center px-20`}>
-
+        <div className={`flex flex-row justify-center gap-4 basis-1/4 px-5 fixed w-full bottom-10 md:bottom-0 ${isHoveringFile || isStartingShortcut ? 'md:fixed md:-bottom-20' : 'md:relative'} text-sm md:text-xl text-stone-400 dark:text-stone-500 text-center px-20`}>
         <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
         whileInView={{ 
             y: yOffset(isHoveringFile),
