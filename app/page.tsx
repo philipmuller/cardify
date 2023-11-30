@@ -68,6 +68,7 @@ export default function Home() {
   const finalSwatches: [string] = [""];//"to-amber-50 dark:to-amber-950", "to-orange-50 dark:to-orange-950", "to-red-50 dark:to-red-950"];
 
   async function handlePaste() {
+    console.log("PASTE DETECTED");
     try {
       const text = await navigator.clipboard.readText();
       router.push(LanternEngine.constructNewDeckUrlFromText(text));
@@ -113,7 +114,12 @@ export default function Home() {
         accept=".xlsx, .xls, image/*, .doc, .docx, .ppt, .pptx, .txt, .pdf"
       />
       <PreviewDisplay state={ isHoveringFile || isStartingShortcut ? PreviewDisplayState.hint : PreviewDisplayState.display} breakpoint={breakpoint} screenHeight={height} />
-      <OptionsBar isHoveringFile={isHoveringFile} isStartingShortcut={isStartingShortcut} breakpoint={breakpoint} screenHeight={height}/>
+      <OptionsBar 
+      isHoveringFile={isHoveringFile} 
+      isStartingShortcut={isStartingShortcut} 
+      breakpoint={breakpoint} 
+      screenHeight={height}
+      onPressPaste={handlePaste}/>
     </form>
   );
 }
