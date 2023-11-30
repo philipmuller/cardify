@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import firebase, { auth } from "./engine/firebase";
+import { Cards } from "@phosphor-icons/react";
 
 const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
@@ -25,13 +26,13 @@ export default function RootLayout({
 }) {
 
   const [buttonText, setButtonText] = useState("Log in");
-  // check if user is logged in
+
   useEffect(() => onAuthStateChanged(auth, (user) => {
     if (user) {
       const uid = user.uid;
       setButtonText("Log out")
     } else {
-      // User is signed out
+
       console.log("User is signed out.")
       setButtonText("Log in")
     }
@@ -65,7 +66,12 @@ export default function RootLayout({
                 <Link href={{ pathname: "/" }}>Cardybee</Link>
               </span>
               <div className="flex flex-row gap-10">
-                <ThemeSwitcher />
+                <ThemeSwitcher user={buttonText}/>
+                {/* <button
+                  className={`right-5 rounded-md hover:scale-110 active:scale-100 duration-200`}
+                >
+                  <Cards size={28} color="#e7e5e4" weight="bold" />
+                </button> */}
                 <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded" onClick={buttonText === "Log in" ? goToLogIn : logOut}>{buttonText}</button>
               </div>
             </nav>
