@@ -12,7 +12,7 @@ export enum PreviewDisplayState {
     loading
 }
 
-export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplayState, breakpoint: Breakpoint}) {
+export function PreviewDisplay({ state, breakpoint, screenHeight }: { state: PreviewDisplayState, breakpoint: Breakpoint, screenHeight: number}) {
     //mouse pointer coordinates
     const coords = usePointerCoords();
 
@@ -26,6 +26,9 @@ export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplaySta
     const cardSpacingDesktop = 240; //spacing when displaying (desktop only)
     const hintCardSpacingDesktop = 360; //spacing when hinting (desktop only)
 
+    //Push down animated
+    const pushDown = screenHeight/3;
+
     const cardSpacingMobile = 295; //spacing when displaying (mobile only)
 
     const xOffsetsDesktop = [cardSpacingDesktop, 0, -cardSpacingDesktop];
@@ -37,7 +40,7 @@ export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplaySta
 
     //Desktop Vertical positioning
     const topPadding = [100, 0, 0];
-    const topPaddingHint = [350, 400, 450];
+    const topPaddingHint = [pushDown-50, pushDown, pushDown+50];
 
     const bottomPadding = [0, 160, 0];
     const bottomPaddingHint = [0, 0, 0];

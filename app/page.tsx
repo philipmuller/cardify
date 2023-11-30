@@ -12,6 +12,7 @@ import { auth } from "./engine/firebase";
 import { PreviewDisplay, PreviewDisplayState } from "./components/preview-display";
 import OptionsBar from "./components/options-bar";
 import { useBreakpoints, Breakpoint } from "./hooks/use-breakpoints";
+import { useWindowDimensions } from "./hooks/use-window-dimensions";
 
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams()!;
   const [ isStartingShortcut ] = useDetectPaste(handlePaste);
+  const { width, height } = useWindowDimensions();
 
 
   //breakpoints
@@ -110,8 +112,8 @@ export default function Home() {
         multiple={true}
         accept=".xlsx, .xls, image/*, .doc, .docx, .ppt, .pptx, .txt, .pdf"
       />
-      <PreviewDisplay state={ isHoveringFile || isStartingShortcut ? PreviewDisplayState.hint : PreviewDisplayState.display} breakpoint={breakpoint} />
-      <OptionsBar isHoveringFile={isHoveringFile} isStartingShortcut={isStartingShortcut} breakpoint={breakpoint}/>
+      <PreviewDisplay state={ isHoveringFile || isStartingShortcut ? PreviewDisplayState.hint : PreviewDisplayState.display} breakpoint={breakpoint} screenHeight={height} />
+      <OptionsBar isHoveringFile={isHoveringFile} isStartingShortcut={isStartingShortcut} breakpoint={breakpoint} screenHeight={height}/>
     </form>
   );
 }
