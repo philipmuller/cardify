@@ -83,7 +83,7 @@ export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplaySta
                     console.log(xOffset(idx));
                     return (
                         <motion.div
-                        className="flex items-center"// bg-red-500"
+                        className="flex items-center box-content"// bg-red-500"
                         key={idx}
                         whileInView={{ 
                             x: xOffset(idx),
@@ -103,7 +103,7 @@ export function PreviewDisplay({ state, breakpoint }: { state: PreviewDisplaySta
     };
     
     return (
-        <div className="flex flex-row justify-center items-center basis-3/4 pt-20 pb-10">
+        <div className="flex flex-row justify-center items-center basis-3/4 pt-20 pb-14">
             {displayCards()}
         </div>
     );
