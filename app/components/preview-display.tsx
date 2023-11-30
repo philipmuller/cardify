@@ -86,14 +86,13 @@ export function PreviewDisplay({ state, breakpoint, screenHeight }: { state: Pre
                     console.log(xOffset(idx));
                     return (
                         <motion.div
-                        className="flex items-center box-content"// bg-red-500"
+                        className="flex box-content"// bg-red-500"
                         key={idx}
                         whileInView={{ 
                             x: xOffset(idx),
                             y: yOffset(idx),
                             paddingTop: tPadding(idx),
                             paddingBottom: bPadding(idx),
-                            height: isMobile() ? 200 : undefined,
                         }}
                         transition={transition}>
                             <PreviewCard/>
@@ -106,7 +105,7 @@ export function PreviewDisplay({ state, breakpoint, screenHeight }: { state: Pre
     };
     
     return (
-        <div className="flex flex-row justify-center items-center basis-3/4 pt-20 pb-14">
+        <div className="flex flex-row justify-center items-center basis-3/4 pt-20 pb-14 shrink">
             {displayCards()}
         </div>
     );
