@@ -78,17 +78,18 @@ export abstract class LighthouseEngine {
 
         lg.log("Deck writing completed." + JSON.stringify(dbDeck)+JSON.stringify(dbDeckError));
 
-        for (let card of deck.cards) {
-            const { data: dbCard, error: dbCardError } = await supabase.from('cards')
-            .insert([{ 
-                front: card.front,
-                back: card.back,
-                deck_id: dbDeck![0].id
-            }]).select()
-
-            lg.log("Card writing completed." + JSON.stringify(dbCard)+JSON.stringify(dbCardError));
+        if (dbDeck != null) {
+            for (let card of deck.cards) {
+                const { data: dbCard, error: dbCardError } = await supabase.from('cards')
+                .insert([{ 
+                    front: card.front,
+                    back: card.back,
+                    deck_id: dbDeck![0].id
+                }]).select()
+    
+                lg.log("Card writing completed." + JSON.stringify(dbCard)+JSON.stringify(dbCardError));
+            }
         }
-
 
         lg.logReturn(deck);
         return deck;
