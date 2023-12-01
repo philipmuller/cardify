@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import CardComponent from "./card-component";
 import ExpandIcon from "@/app/icons/expand-icon";
 import { useBreakpoints, Breakpoint } from "../hooks/use-breakpoints";
+import PreviewCard from "./preview-card";
 
 export default function DeckPreview({ deck }: { deck: Deck}) {
     const breakpoint = useBreakpoints();
@@ -28,14 +29,7 @@ export default function DeckPreview({ deck }: { deck: Deck}) {
     }
 
     function carouselElement(idx: number, card: Card) {
-        return <CardComponent
-        isPlaceholder={false}
-        breakpoint={breakpoint}
-        card={card}
-        fade={calculateCardFade(idx)} 
-        expanded={isExpanded && idx==currentIdx} 
-        flipped={isFlipped && idx==currentIdx}
-        />
+        return <PreviewCard text={card.front}/>
     }
 
     return (
