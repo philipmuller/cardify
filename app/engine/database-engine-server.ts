@@ -28,6 +28,13 @@ export class SupabaseServer {
         );
     }
 
+    static async isLoggedIn(): Promise<boolean> {
+        const supabase = this.getServerClient();
+        const session = await supabase.auth.getSession();
+        console.log(JSON.stringify(session));
+        return session.data.session != null;
+    }
+
     static async getDeck(id: string): Promise<Deck | undefined> {
 
         const supabase = this.getServerClient();
