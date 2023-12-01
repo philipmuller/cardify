@@ -9,16 +9,18 @@ import ExpandIcon from "@/app/icons/expand-icon";
 import { useBreakpoints, Breakpoint } from "../hooks/use-breakpoints";
 
 export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMode?: boolean}) {
-    const carouselItemSize = 3;
+    const breakpoint = useBreakpoints();
+    const isMobile = breakpoint == Breakpoint.sm;
+
+    const carouselItemSize = isMobile ? 2 : 3;
+
     const [currentIdx, setCurrentIdx] = useState(carouselItemSize);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
     const accumulatedDeltaY = useRef(0);
     const accumulatedDeltaX = useRef(0);
 
-    const breakpoint = useBreakpoints();
-
-    const isMobile = breakpoint == Breakpoint.sm;
+    const expandedCardTranslation = isMobile ? 80 : 150;
     
 
     useEffect(() => {
@@ -173,7 +175,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
     const browserElementAnimationStates: Variants = {
         regular: idx => ({
             x: calculateOffset(idx),
-            y: isExpanded && idx == currentIdx ? -150 : 0,
+            y: isExpanded && idx == currentIdx ? -expandedCardTranslation : 0,
             zIndex: calculateZ(idx),
             scale: calculateScale(idx),
             opacity: 1,
@@ -266,7 +268,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
         })}
     </div>
 
-    <div className={`flex red-500 flex-row gap-10 ${isExpanded ? "-translate-y-[150px]" : ""}`}>
+    <div className={`flex red-500 flex-row gap-10 ${isExpanded ? `-translate-y-[${expandedCardTranslation}px]` : ""}`}>
         <button onClick={prev}><ArrowLeft className="text-stone-400 dark:text-stone-500" size={32}/></button>
         <button onClick={() => setIsExpanded(!isExpanded)}><ExpandIcon className="fill-stone-400 dark:fill-stone-500 stroke-stone-400 dark:stroke-stone-500" close={isExpanded}/></button>
         {/* <p className="text-stone-500">{currentIdx+1}/{cards.length}</p> */}

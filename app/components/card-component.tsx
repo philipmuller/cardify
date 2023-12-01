@@ -22,7 +22,7 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
         regular: {
           opacity: 1,
           rotateY: flipped ? 180 : 0, 
-          width: "20rem",
+          width: minRegular,
           minWidth: minRegular,
           maxWidth: maxRegular,
           minHeight: minRegular,
@@ -31,8 +31,10 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
         expanded: {
           opacity: 1,
           rotateY: flipped ? 180 : 0,
+          paddingLeft: "10px",
+          paddingRight: "10px",
           width: "50rem", 
-          minHeight: "50rem",
+          minHeight: "35rem",
           maxHeight: "1000rem",
         },
         offscreen: {
@@ -64,7 +66,7 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
             damping: 20,  
             duration: 0.2
           }}>
-            <div className="bg-white dark:bg-[#23201F] w-3/4 rounded-5xl flex overflow-hidden flip-card-inner shadow-[0_4px_43px_32px_rgba(206,206,206,0.25)] dark:shadow-[0_4px_43px_32px_rgba(28,25,23,0.4)] p-12">
+            <div className={`bg-white dark:bg-[#23201F] ${expanded ? 'w-full': 'w-3/4'} rounded-5xl flex overflow-hidden flip-card-inner shadow-[0_4px_43px_32px_rgba(206,206,206,0.25)] dark:shadow-[0_4px_43px_32px_rgba(28,25,23,0.4)] p-12`}>
               {frontOrBack()}
             </div>
         </motion.div>
