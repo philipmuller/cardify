@@ -16,12 +16,12 @@ export default async function MyDecks() {
   const decks = await SupabaseServer.getDecks();
 
   return (
-    <main className="flex flex-col items-start content-center justify-start justify-items-center">
+    <main className="flex flex-wrap items-center content-center justify-center justify-items-center pt-36">
       {
         decks.map((deck) => (
-          <div key={deck.id} className="flex flex-col p-20">
-            <Link href={`/deck/${deck.id}`} className="text-stone-600 dark:text-stone-300 text-3xl text-center w-max font-semibold lg:text-5xl">{deck.title}</Link>
+          <div key={deck.id} className="flex flex-col items-center p-8 pb-14 gap-8">
             <DeckPreview deck={deck.plainObject()} />
+            <Link href={`/deck/${deck.id}`} className="text-stone-600 dark:text-stone-300 text-2xl text-center w-max font-semibold lg:text-3xl">{deck.title}</Link>
           </div>
         ))
       }

@@ -13,7 +13,7 @@ export default function DeckPreview({ deck }: { deck: Deck}) {
     const breakpoint = useBreakpoints();
     const isMobile = breakpoint == Breakpoint.sm;
 
-    const carouselItemSize = isMobile ? 2 : 3;
+    const carouselItemSize = 2;
 
     const [currentIdx, setCurrentIdx] = useState(carouselItemSize);
     const [isExpanded, setIsExpanded] = useState(false);
@@ -21,8 +21,8 @@ export default function DeckPreview({ deck }: { deck: Deck}) {
 
     function calculateCardFade(idx: number) { return 1 - (Math.abs(currentIdx - idx)/3) }
 
-    function upperLimit(): number { return isExpanded ? currentIdx : currentIdx + carouselItemSize }
-    function lowerLimit(): number { return isExpanded ? currentIdx : currentIdx - carouselItemSize }
+    function upperLimit(): number { return currentIdx + carouselItemSize }
+    function lowerLimit(): number { return currentIdx - carouselItemSize }
 
 
     function handleClick() {
@@ -34,7 +34,7 @@ export default function DeckPreview({ deck }: { deck: Deck}) {
 
     return (
     <>
-    <div className="flex items-center content-center justify-center justify-items-center -space-x-36 md:-space-x-60">
+    <div className="flex items-center content-center justify-center justify-items-center -space-x-36 md:-space-x-[25rem]">
         {deck.cards.map((card, idx) => {
             if (idx <= upperLimit() && idx >= lowerLimit()) {
                 return (
