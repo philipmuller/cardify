@@ -27,7 +27,7 @@ export default function Home() {
   //breakpoints
   const breakpoint = useBreakpoints();
 
-  // check if user is logged in
+  //check if user is logged in
   // useEffect(() => onAuthStateChanged(auth, (user) => {
   //   if (user) {
   //     const uid = user.uid;
@@ -37,27 +37,6 @@ export default function Home() {
   //     console.log("User is signed out.")
   //   }
   // }))
-
-  function calculateRotation(idx: number): number {
-    const rotation = (idx - 1) * 20;
-    var returnString = "";
-    if (rotation >= 0) {
-      returnString = `${rotation}`;
-    } else {
-      const positiveRotation = rotation * -1;
-      returnString = `m${positiveRotation}`;
-    }
-    console.log(returnString);
-    return rotation;
-  }
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
-
-      return params.toString()
-  }, [searchParams]);
 
   const offsetsY = [90, -140, 0];
   const fileOffsetsY = [250, 300, 350];
