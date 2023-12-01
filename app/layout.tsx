@@ -9,7 +9,7 @@ import { ThemeSwitcher } from "./theme-switcher";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import firebase, { auth } from "./engine/firebase";
+import { auth } from "./engine/firebase";
 import { Cards } from "@phosphor-icons/react";
 
 const hk = Hanken_Grotesk({ subsets: ["latin"] });

@@ -5,8 +5,14 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../engine/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
 
 export default function Login() {
+
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     const loginEmailRef = useRef<HTMLInputElement>(null);
     const loginPasswordRef = useRef<HTMLInputElement>(null);
@@ -18,7 +24,36 @@ export default function Login() {
 
         const email: string = loginEmailRef.current?.value !== undefined ? loginEmailRef.current?.value : ''
         const password: string = loginPasswordRef.current?.value !== undefined ? loginPasswordRef.current?.value : ''
-        
+
+        supabaseLogin(email, password);
+        //firebaseLogin(email, password);
+
+    }
+
+    async function supabaseSignUp(email: string, password: string) {
+        await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo: `${location.origin}/auth/confirm`,
+            },
+        });
+
+        //setShowEmailSent(true);
+    }
+
+
+    async function supabaseLogin(email: string, password: string) {
+        await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          console.log(`attempting to push: ${location.origin}`);
+          router.push(`${location.origin}`);
+          router.refresh();
+    }
+
+    function firebaseLogin(email:string, password:string) {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
 
@@ -35,6 +70,7 @@ export default function Login() {
                 const errorMessage = error.message;
                 alert(errorMessage);
             });
+
     }
 
     return (

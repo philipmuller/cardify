@@ -7,7 +7,8 @@ import { FileEngine } from "./file-engine";
 import { FileType } from "../model/file-type";
 import { Logger } from "./logging-engine";
 import { CreateDeckParams, CreateDeckMode } from "../model/comms-utils";
-import { create } from "domain";
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 
 export abstract class LighthouseEngine {
@@ -49,6 +50,45 @@ export abstract class LighthouseEngine {
                 lg.log(message);
                 throw new Error("Invalid mode");
         }
+
+        const cookieStore = cookies()
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+              cookies: {
+                get(name: string) {
+                  return cookieStore.get(name)?.value
+                },
+                set(name: string, value: string, options: CookieOptions) {
+                  cookieStore.set({ name, value, ...options })
+                },
+                remove(name: string, options: CookieOptions) {
+                  cookieStore.delete({ name, ...options })
+                },
+              },
+            }
+        )
+
+        
+        const { data: dbDeck, error: dbDeckError } = await supabase.from('decks')
+        .insert([{ 
+            title: deck.title,
+        }]).select()
+
+        lg.log("Deck writing completed." + JSON.stringify(dbDeck)+JSON.stringify(dbDeckError));
+
+        for (let card of deck.cards) {
+            const { data: dbCard, error: dbCardError } = await supabase.from('cards')
+            .insert([{ 
+                front: card.front,
+                back: card.back,
+                deck_id: dbDeck![0].id
+            }]).select()
+
+            lg.log("Card writing completed." + JSON.stringify(dbCard)+JSON.stringify(dbCardError));
+        }
+
 
         lg.logReturn(deck);
         return deck;

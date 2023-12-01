@@ -5,5 +5,6 @@ export interface DatabaseEngine {
 }
 
 export class FirebaseEngine implements DatabaseEngine {
+    
 
 }

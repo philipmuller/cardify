@@ -8,7 +8,7 @@ import { useDropFile } from "./hooks/use-drop-file";
 import { LanternEngine } from "./engine/client-engine";
 import { FileType } from "./model/file-type";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./engine/firebase";
+//import { auth } from "./engine/firebase";
 import { PreviewDisplay, PreviewDisplayState } from "./components/preview-display";
 import OptionsBar from "./components/options-bar";
 import { useBreakpoints, Breakpoint } from "./hooks/use-breakpoints";
@@ -28,15 +28,15 @@ export default function Home() {
   const breakpoint = useBreakpoints();
 
   // check if user is logged in
-  useEffect(() => onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      //do whatever
-    } else {
-      // User is signed out
-      console.log("User is signed out.")
-    }
-  }))
+  // useEffect(() => onAuthStateChanged(auth, (user) => {
+  //   if (user) {
+  //     const uid = user.uid;
+  //     //do whatever
+  //   } else {
+  //     // User is signed out
+  //     console.log("User is signed out.")
+  //   }
+  // }))
 
   function calculateRotation(idx: number): number {
     const rotation = (idx - 1) * 20;
