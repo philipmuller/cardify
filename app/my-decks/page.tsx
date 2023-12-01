@@ -1,10 +1,10 @@
 import CardComponent from "../components/card-component";
 import { LighthouseEngine } from "../engine/server-engine";
 import DeckPreview from "../components/deck-preview";
-
+import { SupabaseServer } from "@/app/engine/database-engine-server";
 
 export default async function MyDecks() {
-  const decks = await LighthouseEngine.getDecksFromDatabase();
+  const decks = await SupabaseServer.getDecks();
 
   return (
     <main className="flex flex-col items-start content-center justify-start justify-items-center">

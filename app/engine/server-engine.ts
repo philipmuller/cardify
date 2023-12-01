@@ -2,7 +2,6 @@ import { ReadStream } from "fs";
 import { Deck , Card } from "../model/card-model";
 import { AIEngine, OpenAIEngine, DemoAIEngine } from "./ai-engine";
 import { AIIntent } from "./ai-intent";
-import { DatabaseEngine, SupabaseServer } from "./database-engine-server";
 import { FileEngine } from "./file-engine";
 import { FileType } from "../model/file-type";
 import { Logger } from "./logging-engine";
@@ -21,25 +20,25 @@ export abstract class LighthouseEngine {
         //Implement authentication
     }
     //Database ----------------
-    static async getDeckFromDatabase(id: string): Promise<Deck | undefined> {
-        const lg = this.logger.subprocess("getDeckFromDatabase");
-        lg.logCall([id]);
+    // static async getDeckFromDatabase(id: string): Promise<Deck | undefined> {
+    //     const lg = this.logger.subprocess("getDeckFromDatabase");
+    //     lg.logCall([id]);
 
-        const deck = await SupabaseServer.getDeck(id);
+    //     const deck = await SupabaseServer.getDeck(id);
 
-        lg.logReturn(deck);
-        return deck;
-    }
+    //     lg.logReturn(deck);
+    //     return deck;
+    // }
 
-    static async getDecksFromDatabase(): Promise<Deck[]> {
-        const lg = this.logger.subprocess("getDecksFromDatabase");
-        lg.logCall([]);
+    // static async getDecksFromDatabase(): Promise<Deck[]> {
+    //     const lg = this.logger.subprocess("getDecksFromDatabase");
+    //     lg.logCall([]);
 
-        const decks = await SupabaseServer.getDecks();
+    //     const decks = await SupabaseServer.getDecks();
 
-        lg.logReturn(decks);
-        return decks;
-    }
+    //     lg.logReturn(decks);
+    //     return decks;
+    // }
 
     //Comms ------------------
     static async handleGetDeckRequest(params: CreateDeckParams ): Promise<Deck> {
