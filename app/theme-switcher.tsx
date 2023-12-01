@@ -40,7 +40,7 @@ export const ThemeSwitcher: React.FC<SwitcherProps> = ({ user }) => {
   }
 
   const goToDecksPage = (e: MouseEvent<HTMLButtonElement>) => {
-    router.push('/decks');
+    router.push('/my-decks');
   }
 
   return (

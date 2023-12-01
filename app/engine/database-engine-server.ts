@@ -1,33 +1,36 @@
 //Classess that implement DatabaseEngine can be used as database providers
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers'
 import { Logger } from './logging-engine';
 import { Deck, Card } from '../model/card-model';
 
-export interface DatabaseEngine {
+export class SupabaseServer {
+    static logger = new Logger("SupabaseServer");
 
-}
 
-export class SupabaseServer implements DatabaseEngine {
-    static logger = new Logger("DatabaseDeckPage");
-
-    static async getDeck(id: string): Promise<Deck | undefined> {
+    private static getServerClient(): SupabaseClient<any, "public", any> {
         const cookieStore = cookies();
 
-        const supabase = createServerClient(
+        return createServerClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
             {
                 cookies: {
-                get(name: string) {
-                    return cookieStore.get(name)?.value
-                },
-                remove(name: string, options: CookieOptions) {
-                    cookieStore.delete({ name, ...options })
-                },
+                    get(name: string) {
+                        return cookieStore.get(name)?.value
+                    },
+                    remove(name: string, options: CookieOptions) {
+                        cookieStore.delete({ name, ...options })
+                    },
                 },
             }
         );
+    }
+
+    static async getDeck(id: string): Promise<Deck | undefined> {
+
+        const supabase = this.getServerClient();
 
         const lg = this.logger.subprocess("getDeck");
         lg.logCall([id]);
@@ -53,22 +56,7 @@ export class SupabaseServer implements DatabaseEngine {
     }
 
     static async getDecks(): Promise<Deck[]> {
-        const cookieStore = cookies();
-
-        const supabase = createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            {
-                cookies: {
-                get(name: string) {
-                    return cookieStore.get(name)?.value
-                },
-                remove(name: string, options: CookieOptions) {
-                    cookieStore.delete({ name, ...options })
-                },
-                },
-            }
-        );
+        const supabase = this.getServerClient();
 
         const lg = this.logger.subprocess("getDecks");
         lg.logCall([]);

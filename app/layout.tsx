@@ -11,6 +11,7 @@ import { MouseEvent, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./engine/firebase";
 import { Cards } from "@phosphor-icons/react";
+import { SupabaseBrowser } from "./engine/database-engine-client";
 
 const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
@@ -19,24 +20,31 @@ const hk = Hanken_Grotesk({ subsets: ["latin"] });
 //   description: "Turn anything into flashcards",
 // };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 
   const [buttonText, setButtonText] = useState("Log in");
 
-  useEffect(() => onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      setButtonText("Log out")
-    } else {
+  SupabaseBrowser.onSignIn(() => {
+    setButtonText(() => "Log out");
+  });
 
-      console.log("User is signed out.")
-      setButtonText("Log in")
-    }
-  }))
+  SupabaseBrowser.onSignOut(() => {
+    setButtonText(() => "Log in");
+  });
+
+
+  // function firebaseIsLoggedIn(): boolean {
+  //   let isLoggedIn = false;
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       isLoggedIn = true;
+  //     } else {
+  //       isLoggedIn = false;
+  //     }
+  //   });
+
+  //   return isLoggedIn;
+  // }
 
 
   const router = useRouter();
@@ -46,13 +54,20 @@ export default function RootLayout({
   }
 
   const logOut = (e: MouseEvent<HTMLButtonElement>) => {
-    signOut(auth).then(() => {
-      // Sign-out successful.
-      alert("Logged out successfully!");
-      router.push('/');
-    }).catch((error) => {
-      alert(error)
+    console.log("logging out");
+    setButtonText(() => "Log in");
+    SupabaseBrowser.signOut((error) => {
+      console.log(error)
+      //router.push('/login');
+      router.refresh();
     });
+    // signOut(auth).then(() => {
+    //   // Sign-out successful.
+    //   alert("Logged out successfully!");
+    //   router.push('/');
+    // }).catch((error) => {
+    //   alert(error)
+    // });
   }
 
   return (
@@ -72,7 +87,8 @@ export default function RootLayout({
                 >
                   <Cards size={28} color="#e7e5e4" weight="bold" />
                 </button> */}
-                <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded" onClick={buttonText === "Log in" ? goToLogIn : logOut}>{buttonText}</button>
+                <button className="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-4 rounded" 
+                onClick={buttonText === "Log in" ? goToLogIn : logOut}>{buttonText}</button>
               </div>
             </nav>
             {children}

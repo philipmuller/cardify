@@ -6,6 +6,8 @@ import { auth } from "../engine/firebase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
+import { SupabaseBrowser } from "../engine/database-engine-client";
+import { revalidatePath } from "next/cache";
 
 export default function Login() {
 
@@ -44,13 +46,11 @@ export default function Login() {
 
 
     async function supabaseLogin(email: string, password: string) {
-        await supabase.auth.signInWithPassword({
-            email,
-            password,
-          });
-          console.log(`attempting to push: ${location.origin}`);
-          router.push(`${location.origin}`);
-          router.refresh();
+        SupabaseBrowser.signIn(email, password, (response) => {
+            console.log(`attempting to push: ${location.origin}`);
+            router.refresh();
+            router.push(`/`);
+        });    
     }
 
     function firebaseLogin(email:string, password:string) {
