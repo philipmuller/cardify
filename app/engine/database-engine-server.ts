@@ -10,28 +10,29 @@ export interface DatabaseEngine {
 
 export class SupabaseServer implements DatabaseEngine {
     static logger = new Logger("DatabaseDeckPage");
-    static cookieStore = cookies();
-
-    static supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-            get(name: string) {
-                return SupabaseServer.cookieStore.get(name)?.value
-            },
-            remove(name: string, options: CookieOptions) {
-                SupabaseServer.cookieStore.delete({ name, ...options })
-            },
-            },
-        }
-    );
 
     static async getDeck(id: string): Promise<Deck | undefined> {
+        const cookieStore = cookies();
+
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value
+                },
+                remove(name: string, options: CookieOptions) {
+                    cookieStore.delete({ name, ...options })
+                },
+                },
+            }
+        );
+
         const lg = this.logger.subprocess("getDeck");
         lg.logCall([id]);
 
-        const { data: dbDeck, error: dbDeckError } = await this.supabase
+        const { data: dbDeck, error: dbDeckError } = await supabase
         .from('decks')
         .select("title, cards(id, front, back)")
         .eq('id', id)
@@ -52,17 +53,34 @@ export class SupabaseServer implements DatabaseEngine {
     }
 
     static async getDecks(): Promise<Deck[]> {
+        const cookieStore = cookies();
+
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value
+                },
+                remove(name: string, options: CookieOptions) {
+                    cookieStore.delete({ name, ...options })
+                },
+                },
+            }
+        );
+
         const lg = this.logger.subprocess("getDecks");
         lg.logCall([]);
 
-        const userID = (await this.supabase.auth.getUser()).data.user?.id;
+        const userID = (await supabase.auth.getUser()).data.user?.id;
 
         if (!userID) {
             lg.log("User not logged in");
             return [];
         }
 
-        const { data: dbDecks, error: dbDecksError } = await this.supabase
+        const { data: dbDecks, error: dbDecksError } = await supabase
         .from('decks')
         .select("id, title, cards(id, front, back), created_at")
         .order('created_at', { ascending: false })
