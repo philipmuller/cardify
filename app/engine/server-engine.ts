@@ -2,7 +2,7 @@ import { ReadStream } from "fs";
 import { Deck , Card } from "../model/card-model";
 import { AIEngine, OpenAIEngine, DemoAIEngine } from "./ai-engine";
 import { AIIntent } from "./ai-intent";
-import { DatabaseEngine, FirebaseEngine } from "./database-engine";
+import { DatabaseEngine, SupabaseServer } from "./database-engine-server";
 import { FileEngine } from "./file-engine";
 import { FileType } from "../model/file-type";
 import { Logger } from "./logging-engine";
@@ -16,10 +16,29 @@ export abstract class LighthouseEngine {
     private static logger: Logger = new Logger("LighthouseEngine");
 
     private static aiEngine: AIEngine = this.demoMode ? new DemoAIEngine() : new OpenAIEngine();
-    private static databaseEngine: DatabaseEngine = FirebaseEngine;
     
     static auth() {
         //Implement authentication
+    }
+    //Database ----------------
+    static async getDeckFromDatabase(id: string): Promise<Deck | undefined> {
+        const lg = this.logger.subprocess("getDeckFromDatabase");
+        lg.logCall([id]);
+
+        const deck = await SupabaseServer.getDeck(id);
+
+        lg.logReturn(deck);
+        return deck;
+    }
+
+    static async getDecksFromDatabase(): Promise<Deck[]> {
+        const lg = this.logger.subprocess("getDecksFromDatabase");
+        lg.logCall([]);
+
+        const decks = await SupabaseServer.getDecks();
+
+        lg.logReturn(decks);
+        return decks;
     }
 
     //Comms ------------------
