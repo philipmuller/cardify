@@ -15,12 +15,15 @@ export default async function MyDecks() {
   }
   const decks = await SupabaseServer.getDecks();
 
+  const reducedDecks = [...decks].slice(0, 3);
+  const colors = ["bg-yellow-500", "bg-red-500", "bg-green-500", "bg-blue-500", "bg-purple-500", "bg-pink-500", "bg-indigo-500"];
+
   return (
-    <main className="flex flex-wrap items-center content-center justify-center justify-items-center pt-36">
+    <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-36 px-10 gap-10">
       {
-        decks.map((deck) => (
+        decks.map((deck, idx) => (
           <div key={deck.id} className="flex flex-col items-center p-8 pb-14 gap-8">
-            <DeckPreview deck={deck.plainObject()} />
+            <DeckPreview deck={deck.plainObject()} debugColor={colors[idx % colors.length]} />
             <Link href={`/deck/${deck.id}`} className="text-stone-600 dark:text-stone-300 text-2xl text-center w-max font-semibold lg:text-3xl">{deck.title}</Link>
           </div>
         ))
