@@ -9,3 +9,7 @@ export enum FileType {
     ppt = "application/vnd.ms-powerpoint",
     txt = "text/plain"
 }
+
+export function getFileTypeFromString(value: string): FileType | undefined {
+    return Object.values(FileType).find((enumValue) => enumValue === value);
+}
