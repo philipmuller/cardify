@@ -38,14 +38,16 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
           <p>{isMobile() ? "Select file" : "Drop file"}</p>
         </motion.div>
 
-        <motion.div layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
+        <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
+        type="button"
         onClick={onPressPaste}
         whileInView={{ 
             y: yOffset(isStartingShortcut),
             scale: isStartingShortcut ? 2 : 1 , 
             opacity: isHoveringFile ? 0 : 1 
         }}
-        transition={transition}>
+        transition={transition}
+        >
           <div className="flex flex-row items-center">
             {isMobile() ?
             <ClipboardText size={iconSize}/> 
@@ -53,7 +55,7 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
             <h1 className={`hidden md:flex text-4xl font-light max-h-5 items-center ${isStartingShortcut ? "opacity-40" : "opacity-100"}`}>V</h1>
           </div>
           <p>Paste text</p>
-        </motion.div>
+        </motion.button>
         
         <motion.div layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28" 
         whileInView={{

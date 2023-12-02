@@ -268,7 +268,7 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
         })}
     </div>
 
-    <div className={`flex red-500 flex-row gap-10 ${isExpanded ? `-translate-y-[${expandedCardTranslation}px]` : ""}`}>
+    <div className={`flex flex-row gap-10 ${isExpanded ? `-translate-y-[${expandedCardTranslation}px]` : ""}`}>
         <button onClick={prev}><ArrowLeft className="text-stone-400 dark:text-stone-500" size={32}/></button>
         <button onClick={() => setIsExpanded(!isExpanded)}><ExpandIcon className="fill-stone-400 dark:fill-stone-500 stroke-stone-400 dark:stroke-stone-500" close={isExpanded}/></button>
         {/* <p className="text-stone-500">{currentIdx+1}/{cards.length}</p> */}

@@ -55,7 +55,7 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
 
     return (
         <motion.div
-          className={`text-base bg-red-500 lg:text-xl text-stone-700 ${isPlaceholder ? 'invisible' : ''} dark:text-stone-200 font-normal flex justify-center`}
+          className={`text-base lg:text-xl text-stone-700 ${isPlaceholder ? 'invisible' : ''} dark:text-stone-200 font-normal flex justify-center`}
           key={card?.id}
           variants={cardAnimationStates}
           initial={false}
