@@ -15,7 +15,8 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
     const minRegular = isMobile ? "25rem" : "28rem";
     const maxRegular = isMobile ? "25rem" : "28rem";
 
-    //const minExpanded = isMobile ? "28rem" : "rem";
+    const minWidthExpanded = isMobile ? "85vw" : "50rem";
+    const minHeightExpanded = isMobile ? "65vh" : "50rem";
 
     //"h-80 w-80 lg:h-[45vh] lg:w-[45vh] min-h-[18rem] min-w-[18rem] max-h-[27rem] max-w-[27rem] aspect-square flex items-center justify-center"
     const cardAnimationStates: Variants = {
@@ -33,8 +34,8 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
           rotateY: flipped ? 180 : 0,
           paddingLeft: "10px",
           paddingRight: "10px",
-          width: "50rem", 
-          minHeight: "35rem",
+          minWidth: minWidthExpanded,
+          minHeight: minHeightExpanded,
           maxHeight: "1000rem",
         },
         offscreen: {
@@ -54,7 +55,7 @@ export default function CardComponent({ isPlaceholder, breakpoint, card, fade, e
 
     return (
         <motion.div
-          className={`text-base lg:text-xl text-stone-700 ${isPlaceholder ? 'invisible' : ''} dark:text-stone-200 font-normal flex justify-center`}
+          className={`text-base bg-red-500 lg:text-xl text-stone-700 ${isPlaceholder ? 'invisible' : ''} dark:text-stone-200 font-normal flex justify-center`}
           key={card?.id}
           variants={cardAnimationStates}
           initial={false}
