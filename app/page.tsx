@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, DragEvent } from "react";
+import { useEffect, useRef, useCallback, DragEvent, ChangeEvent } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDetectPaste } from "./hooks/use-paste";
 import { usePointerCoords } from "./hooks/use-pointer-coords";
@@ -22,7 +22,7 @@ export default function Home() {
   const searchParams = useSearchParams()!;
   const [isStartingShortcut] = useDetectPaste(handlePaste);
   const { width, height } = useWindowDimensions();
-
+  const inputFile = useRef<HTMLInputElement | null>(null);
 
   //breakpoints
   const breakpoint = useBreakpoints();
@@ -49,17 +49,27 @@ export default function Home() {
     e.preventDefault();
     e.stopPropagation();
     console.log("File has been dropped");
-    if (e.dataTransfer?.files[0]) {
-      const file = e.dataTransfer.files[0];
-      console.log("Dropped file type:" + JSON.stringify(file.type));
-      console.log(file);
+    const file = e.dataTransfer.files.item(0);
+    if (!file) return;
 
-      const type = getFileTypeFromString(file.type)
-      if (type !== undefined) {
-        const uploadedFileUrl = await LanternEngine.uploadFile(file, type);
-        router.push(LanternEngine.constructNewDeckUrlFromFile(uploadedFileUrl, type));
-      }
+    uploadSelectedFile(file);
+  }
 
+  async function handleFileSelected(e: ChangeEvent<HTMLInputElement>) {
+    console.log("File has been selected");
+    const file = e.target.files?.item(0);
+    if (!file) return;
+
+    uploadSelectedFile(file);
+  }
+
+  async function uploadSelectedFile(file: File) {
+    console.log("Attempting to upload file " + file.name);
+
+    const type = getFileTypeFromString(file.type);
+    if (type !== undefined) {
+      const uploadedFileUrl = await LanternEngine.uploadFile(file, type);
+      router.push(LanternEngine.constructNewDeckUrlFromFile(uploadedFileUrl, type));
     }
   }
 
@@ -73,8 +83,10 @@ export default function Home() {
         placeholder="fileInput"
         className="hidden"
         type="file"
+        ref={inputFile}
         multiple={true}
-        accept=".xlsx, .xls, image/*, .doc, .docx, .ppt, .pptx, .txt, .pdf"
+        accept=".xlsx, .xls, .doc, .docx, .ppt, .pptx, .txt, .pdf"
+        onChange={handleFileSelected}
       />
       <PreviewDisplay state={isHoveringFile || isStartingShortcut ? PreviewDisplayState.hint : PreviewDisplayState.display} breakpoint={breakpoint} screenHeight={height} />
       <OptionsBar
@@ -82,7 +94,8 @@ export default function Home() {
         isStartingShortcut={isStartingShortcut}
         breakpoint={breakpoint}
         screenHeight={height}
-        onPressPaste={handlePaste} />
+        onPressPaste={handlePaste}
+        onPressFile={() => inputFile.current?.click()} />
     </form>
   );
 }

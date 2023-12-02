@@ -5,12 +5,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Breakpoint } from "../hooks/use-breakpoints";
 import { useRef } from "react";
+import { on } from "events";
 
-export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakpoint, screenHeight, onPressPaste }: { isHoveringFile: boolean, isStartingShortcut: boolean, breakpoint: Breakpoint, screenHeight: number, onPressPaste: () => void }) {
+export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakpoint, screenHeight, onPressPaste, onPressFile }: { isHoveringFile: boolean, isStartingShortcut: boolean, breakpoint: Breakpoint, screenHeight: number, onPressPaste: () => void, onPressFile: () => void }) {
 
     const isMobile = () => { return (breakpoint == Breakpoint.sm) };
-
-    const inputFile = useRef<HTMLInputElement | null>(null);
 
     const iconSize = isMobile() ? 28 : 46;
     const activeOffset = -screenHeight/1.3;
@@ -21,10 +20,10 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
 
     return (
         <div className={`flex flex-row justify-center gap-4 basis-1/4 px-5 fixed w-full bottom-10 md:bottom-0 ${isHoveringFile || isStartingShortcut ? 'md:fixed md:-bottom-20' : 'md:relative'} text-sm md:text-xl text-stone-400 dark:text-stone-500 text-center px-20`}>
-        <motion.div layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
-        // type="file"
-        // id="file"
-        // ref={inputFile}
+        <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
+        type="button"
+        id="fileSelection"
+        onClick={onPressFile}
         whileInView={{ 
             y: yOffset(isHoveringFile),
             x: isHoveringFile ? 190 : 0,
@@ -36,7 +35,7 @@ export default function OptionsBar( { isHoveringFile, isStartingShortcut, breakp
             <FilePlus size={iconSize}/> 
             : <ArrowSquareDown size={iconSize}/>}
           <p>{isMobile() ? "Select file" : "Drop file"}</p>
-        </motion.div>
+        </motion.button>
 
         <motion.button layout className="flex flex-col items-center justify-center p-1 w-full h-full max-w-[180px] max-h-28 gap-1"
         type="button"
