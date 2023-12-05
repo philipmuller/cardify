@@ -27,12 +27,17 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
         console.log("RERUNNING EFFECT");
 
         if (liveMode) {
-            for (let i = currentIdx; i < cards.length; i++) {
+            for (let i = currentIdx; i < (cards.length + carouselItemSize); i++) {
                 setTimeout(() => {
                     move(i);
                 }, 500+(500*(i-currentIdx)));
             }
         }
+        
+    }, [cards]);
+
+    useEffect(() => {
+
         var firstTimePress = true;
         var isLongPress = false;
         var keyUp = false;
@@ -94,7 +99,19 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
             }
         }
 
-        
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+        };
+
+    
+    }, []);
+
+    useEffect(() => {
+
         function handleScroll(event: globalThis.WheelEvent) {
             if (isExpanded) { return; }
             event.preventDefault();
@@ -113,18 +130,14 @@ export default function CardBrowser({ cards, liveMode }: { cards: Card[], liveMo
             }
         }
 
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keyup', handleKeyUp);
         document.addEventListener('wheel', handleScroll, {passive:false});
 
         return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keyup', handleKeyUp);
             document.removeEventListener('wheel', handleScroll);
         };
 
     
-    }, [cards, isExpanded, isFlipped]);
+    }, [isExpanded]);
 
     function calculateZ(idx: number) { return 10 - Math.abs(currentIdx - idx) }
     function calculateScale(idx: number) { return 1 - (Math.abs(currentIdx - idx)/20) }

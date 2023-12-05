@@ -36,6 +36,7 @@ export default function Home() {
   const finalSwatches: [string] = [""];//"to-amber-50 dark:to-amber-950", "to-orange-50 dark:to-orange-950", "to-red-50 dark:to-red-950"];
 
   async function handlePaste() {
+
     console.log("PASTE DETECTED");
     try {
       const text = await navigator.clipboard.readText();
