@@ -4,6 +4,8 @@ import DeckPreview from "../components/deck-preview";
 import { SupabaseServer } from "@/app/engine/database-engine-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { PencilSimpleLine, Square, Trash } from "@phosphor-icons/react";
+import DeckPreviewCell from "../components/deck-preview-cell";
 
 export default async function MyDecks() {
   const isLoggedIn = await SupabaseServer.isLoggedIn();
@@ -33,10 +35,7 @@ export default async function MyDecks() {
     <main className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-36 px-10 gap-10">
       {
         decks.map((deck, idx) => (
-          <div key={deck.id} className="flex flex-col items-center p-8 pb-14 gap-8">
-            <DeckPreview deck={deck.plainObject()} debugColor={colors[idx % colors.length]} />
-            <Link href={`/deck/${deck.id}`} className="text-stone-600 dark:text-stone-300 text-2xl text-center font-semibold lg:text-3xl">{deck.title}</Link>
-          </div>
+          <DeckPreviewCell deck={deck.plainObject()} key={idx} />
         ))
       }
     </main>
