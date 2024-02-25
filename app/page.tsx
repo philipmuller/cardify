@@ -87,13 +87,13 @@ export default function Home() {
             : PreviewDisplayState.display
         }
         breakpoint={breakpoint}
-        screenHeight={height}
+        screenHeight={height ?? 100}
       />
       <OptionsBar
         isHoveringFile={isHoveringFile}
         isStartingShortcut={isStartingShortcut}
         breakpoint={breakpoint}
-        screenHeight={height}
+        screenHeight={height ?? 100}
         onPressPaste={handlePaste}
         onPressFile={() => inputFile.current?.click()}
       />
