@@ -23,6 +23,42 @@ The gameplay of Oracle of Seasons and Ages is similar to that of Link's Awakenin
 
 ## Working hours
 ### Philip
+| Date | Hours | Task  |
+| :----:|:-----| :-----|
+| 11.09. | 6    | Initial project setup |
+| 18.09. | 2    | Prompting experimentation |
+| 20.09. | 4    | Implement openai api |
+| 24.09. | 7    | Desktop design concept |
+| 16.10. | 5    | Simple frontend ui for text pasting |
+| 17.10. | 3    | Exploring pdf-to-text API |
+| 17.10. | 1    | Implementing pdf-to-text |
+| 17.10. | 1    | Adding keyboard shortcut support |
+| 18.10. | 10    | New cards view |
+| 19.10. | 12    | Add live mode with whisper transcription |
+| 27.10. | 3    | Card carousel improved animations |
+| 01.11. | 4    | Designing variable flashcard solutions |
+| 02.11. | 3    | Implement variable flashcard size |
+| 02.11. | 3    | Implement switch to Anthropic Claude for 100k context size |
+| 03.11. | 1    | Implement click to move to card |
+| 03.11. | 3    | Bug fixes |
+| 04.11. | 1    | Design dark mode |
+| 04.11. | 3    | Implement dark mode |
+| 05.11. | 4    | Refactor and bug fixes |
+| 07.11. | 2    | Model objects refactor |
+| 08.11. | 2    | Implement audio through Vercel Blob |
+| 08.11. | 2    | Rework logging |
+| 09.11. | 1    | Create API endpoint for deck creation |
+| 10.11. | 2    | Refactor frontend with custom hooks |
+| 11.11. | 5    | Rework server with OpenAI Assistants API |
+| 13.11. | 9    | Major server refactor to be modular |
+| 16.11. | 8    | Design mobile version |
+| 30.11. | 15    | Make frontend responsive |
+| 02.12. | 4   | Research supabase documentation |
+| 05.12. | 3    | Implement Auth with supabase |
+| 06.12. | 4    | Implement database with supabase |
+| 09.12. | 3    | Create my decks page |
+| 11.12. | 1    | Create deck management dropdown |
+| Total   | 137   | | 
 
 ### Raluca
 | Date | Hours | Task  |
