@@ -48,14 +48,14 @@ export default function DeckPreviewCell({
           {deck.title}
         </Link>
 
-        <button className="relative" onClick={() => setShowMenu(!showMenu)}>
-          <DotsThree
-            size={32}
-            color="#7a7a7a"
+        <button className="relative" onClick={handleDelete}>
+          <Trash
+            size={25}
+            color="#ff8585"
             weight="bold"
             className={`${isHovering ? "opacity-100" : "opacity-0"}`}
           />
-          {showMenu && (
+          {/* {showMenu && (
             <ul
               className="absolute left-4 rounded bg-stone-50"
               onMouseLeave={() => setShowMenu(false)}
@@ -82,7 +82,7 @@ export default function DeckPreviewCell({
                 </div>
               </li>
             </ul>
-          )}
+          )} */}
         </button>
 
         {/* <PencilSimpleLine size={28} color="#7a7a7a" weight="bold"/>
