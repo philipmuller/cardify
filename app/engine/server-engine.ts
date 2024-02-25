@@ -17,30 +17,6 @@ export abstract class LighthouseEngine {
     ? new DemoAIEngine()
     : new OpenAIEngine();
 
-  static auth() {
-    //Implement authentication
-  }
-  //Database ----------------
-  // static async getDeckFromDatabase(id: string): Promise<Deck | undefined> {
-  //     const lg = this.logger.subprocess("getDeckFromDatabase");
-  //     lg.logCall([id]);
-
-  //     const deck = await SupabaseServer.getDeck(id);
-
-  //     lg.logReturn(deck);
-  //     return deck;
-  // }
-
-  // static async getDecksFromDatabase(): Promise<Deck[]> {
-  //     const lg = this.logger.subprocess("getDecksFromDatabase");
-  //     lg.logCall([]);
-
-  //     const decks = await SupabaseServer.getDecks();
-
-  //     lg.logReturn(decks);
-  //     return decks;
-  // }
-
   //Comms ------------------
   static async handleGetDeckRequest(params: CreateDeckParams): Promise<Deck> {
     const lg = this.logger.subprocess("handleGetDeckRequest");

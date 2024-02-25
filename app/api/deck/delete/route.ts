@@ -1,6 +1,5 @@
 // pages/api/deck/delete/route.ts
 import { NextResponse } from "next/server";
-import type { NextApiRequest } from "next";
 import { LighthouseEngine } from "@/app/engine/server-engine";
 
 export async function POST(request: Request): Promise<NextResponse> {

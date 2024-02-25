@@ -8,7 +8,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-row items-center content-center justify-center justify-items-center">
-      
+
     </main>
   );
 }
