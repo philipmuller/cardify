@@ -10,5 +10,5 @@ We believe that flashcards are an amazing tool to improve study flows and effica
 * Access the "My Decks" page from the button on the top right to explore existing decks.
 * Delete any of the existing decks according to your preferences.
 * To create a new deck, return to the homepage and either:
-* Drag & drop a preferred PDF file.
-* Copy text and ctrl/cmd + v (paste) directly on the Home Page.
+  * Drag & drop a preferred PDF file.
+  * Copy text and ctrl/cmd + v (paste) directly on the Home Page.
