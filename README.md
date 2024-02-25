@@ -5,7 +5,7 @@ We believe that flashcards are an amazing tool to improve study flows and effica
 * From the Home Page click on the login button.
 * Use the provided credentials to log in:
   * username: test@test.com
-* password: test
+  * password: test
 * After logging in, you will automatically return to the Home Page.
 * Access the "My Decks" page from the button on the top right to explore existing decks.
 * Delete any of the existing decks according to your preferences.
