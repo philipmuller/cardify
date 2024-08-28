@@ -97,8 +97,8 @@ export function PreviewDisplay({
     return (
       <>
         {Array.from({ length: numCards }).map((_, idx) => {
-          console.log(idx);
-          console.log(xOffset(idx));
+          //console.log(idx);
+          //console.log(xOffset(idx));
           return (
             <motion.div
               className="box-content flex"

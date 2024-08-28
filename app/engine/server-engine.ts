@@ -158,11 +158,7 @@ export abstract class LighthouseEngine {
 
       const fileTypeString =
         searchParams.get(CreateDeckParams.paramNames.fileType) ?? undefined;
-      if (!(<any>Object).values(FileType).includes(fileTypeString)) {
-        lg.log("Invalid file type");
-        throw new Error("Invalid file type");
-      }
-      const fileType = <FileType>fileTypeString;
+      const fileType = <FileType>fileTypeString ?? undefined;
 
       const returnValue = new CreateDeckParams(mode, {
         text: text,

@@ -1,20 +1,31 @@
 "use client";
 
 import { Variants, motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card } from "../model/card-model";
-import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, Record, Stop, StopCircle, VinylRecord, X, XCircle } from "@phosphor-icons/react";
 import CardComponent from "./card-component";
 import ExpandIcon from "@/app/icons/expand-icon";
 import { useBreakpoints, Breakpoint } from "../hooks/use-breakpoints";
+import { PreviewDisplay, PreviewDisplayState } from "./preview-display";
 
 export default function CardBrowser({
   cards,
   liveMode,
+  title = "Untitled deck",
+  onClose,
+  startRecording,
+  stopRecording,
 }: {
   cards: Card[];
   liveMode?: boolean;
+  title?: string;
+  onClose?: () => void;
+  startRecording?: () => void;
+  stopRecording?: () => void;
 }) {
+  console.log("CardBrowser rendering");
+  
   const breakpoint = useBreakpoints();
   const isMobile = breakpoint == Breakpoint.sm;
 
@@ -23,10 +34,12 @@ export default function CardBrowser({
   const [currentIdx, setCurrentIdx] = useState(carouselItemSize);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [firstTime, setFirstTime] = useState(true);
   const accumulatedDeltaY = useRef(0);
   const accumulatedDeltaX = useRef(0);
 
-  const expandedCardTranslation = isMobile ? 80 : 150;
+  const expandedCardTranslation = isMobile ? 40 : 110;
 
   useEffect(() => {
     console.log("RERUNNING EFFECT");
@@ -159,25 +172,25 @@ export default function CardBrowser({
     return Math.exp(Math.abs(currentIdx - idx) / 2.2) * 20 * (currentIdx - idx);
   }
 
-  function next() {
+  const next = useCallback(() => {
     setCurrentIdx((prev) => {
       if (prev < cards.length + carouselItemSize - 1) {
-        setIsFlipped(() => false);
+        setIsFlipped(false);
         return prev + 1;
       }
       return prev;
     });
-  }
+  }, [cards.length, carouselItemSize]);
 
-  function prev() {
+  const prev = useCallback(() => {
     setCurrentIdx((prev) => {
       if (prev > carouselItemSize) {
-        setIsFlipped(() => false);
+        setIsFlipped(false);
         return prev - 1;
       }
       return prev;
     });
-  }
+  }, [carouselItemSize]);
 
   function move(idx: number) {
     console.log(
@@ -275,9 +288,64 @@ export default function CardBrowser({
   }
 
   return (
-    <>
+    <div className="flex flex-col justify-start items-center h-full gap-14">
+      <div className="flex flex-row justify-evenly items-center w-screen">
+        {(onClose) && (!isExpanded) && <div className="w-8 max-w-[32px]">
+          {liveMode && <button
+            className="flex flex-col items-center justify-center relative"
+            type="button"
+            onClick={() => {
+              if(isRecording)
+              {
+                stopRecording!();
+                setIsRecording(false);
+              } else {
+                startRecording!();
+                setIsRecording(true);
+              }
+
+              setFirstTime(false);
+            }
+            }
+          >
+            {isRecording ? (
+              <StopCircle
+                size={32}
+                color="#57534e"
+                weight="fill"
+              />
+            ) : (
+              <Record size={32} color="#57534e" weight="fill"/>
+            )}
+            {firstTime && <p className="text-sm text-stone-600 absolute bg-white shadow-lg rounded-lg p-2 translate-y-12">
+              {isRecording ? "Recording..." : "Start recording"}
+            </p>}
+          </button>}
+        </div>}
+        <h1 className="w-max text-center text-2xl font-semibold text-stone-600 lg:text-5xl dark:text-stone-300 flex flex-row items-center justify-center gap-3">
+            <VinylRecord
+                size={32}
+                color="#ba1717"
+                weight="fill"
+                className="animate-spin"
+                style={{opacity: (liveMode && isRecording) ? 1 : 0}}
+            />
+            {title}
+            <div className="w-8 max-w-[32px]"/>
+        </h1>
+        {(onClose) && (!isExpanded) && <button
+          onClick={() => onClose()}
+          type="button"
+          className="text-stone-600 dark:text-stone-300"
+        >
+          <XCircle
+            size={32}
+            className="text-stone-400 dark:text-stone-500"
+          />
+        </button>}
+      </div>
       <div className="flex content-center items-center justify-center justify-items-center -space-x-36 md:-space-x-60">
-        {generateCarouselDeck().map((card, idx) => {
+        {(cards.length > 0) && generateCarouselDeck().map((card, idx) => {
           if (idx <= upperLimit() && idx >= lowerLimit()) {
             return (
               <motion.div
@@ -296,28 +364,31 @@ export default function CardBrowser({
             );
           }
         })}
+        {(cards.length === 0) &&
+          <PreviewDisplay state={PreviewDisplayState.hint} breakpoint={Breakpoint.md} screenHeight={0} />
+        }
       </div>
 
-      <div
+      {(cards.length > 0) && <div
         className={`flex flex-row gap-10 ${isExpanded ? `-translate-y-[${expandedCardTranslation}px]` : ""}`}
       >
-        <button onClick={prev}>
+        <button onClick={() => prev()} type="button">
           <ArrowLeft className="text-stone-400 dark:text-stone-500" size={32} />
         </button>
-        <button onClick={() => setIsExpanded(!isExpanded)}>
+        <button onClick={() => setIsExpanded(!isExpanded)} type="button">
           <ExpandIcon
             className="fill-stone-400 stroke-stone-400 dark:fill-stone-500 dark:stroke-stone-500"
             close={isExpanded}
           />
         </button>
         {/* <p className="text-stone-500">{currentIdx+1}/{cards.length}</p> */}
-        <button onClick={next}>
+        <button onClick={() => next()} type="button">
           <ArrowRight
             size={32}
             className="text-stone-400 dark:text-stone-500"
           />
         </button>
-      </div>
-    </>
+      </div>}
+    </div>
   );
 }

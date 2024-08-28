@@ -8,6 +8,7 @@ import { ThemeSwitcher } from "./theme-switcher";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useState } from "react";
 import { SupabaseBrowser } from "./engine/database-engine-client";
+import { attachReactRefresh } from "next/dist/build/webpack-config";
 
 const hk = Hanken_Grotesk({ subsets: ["latin"] });
 
@@ -48,7 +49,7 @@ export default function RootLayout({
           <div className="fixed flex h-screen w-screen flex-col overflow-y-auto bg-stone-50 dark:bg-stone-900">
             <nav className="fixed z-[1000] flex w-screen items-center justify-between bg-transparent p-4">
               <span className="text-2xl font-semibold text-stone-800 dark:text-stone-200">
-                <Link href={{ pathname: "/" }}>Cardybee</Link>
+                <Link href={{ pathname: "/"}}>Cardybee</Link>
               </span>
               <div className="flex flex-row gap-10">
                 <ThemeSwitcher user={buttonText} />

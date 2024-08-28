@@ -1,5 +1,6 @@
 import { CreateDeckMode, CreateDeckParams } from "../model/comms-utils";
 import { FileType } from "../model/file-type";
+import { SupabaseBrowser } from "./database-engine-client";
 import { Logger } from "./logging-engine";
 import { upload } from "@vercel/blob/client";
 
@@ -27,18 +28,8 @@ export abstract class LanternEngine {
   ): Promise<string> {
     const lg = this.logger.subprocess("uploadFile");
     lg.logCall([file, fileType]);
-
-    const name =
-      "attachment." +
-      Object.keys(FileType)[Object.values(FileType).indexOf(fileType)];
-
-    const response = await upload(name, file, {
-      access: "public",
-      handleUploadUrl: "/api/file/upload",
-    });
-
-    lg.logReturn(response.url);
-    return response.url;
+    const publicUrlData = await SupabaseBrowser.uploadFile(file, fileType);
+    return publicUrlData;
   }
 
   static constructNewDeckUrlFromFile(fileUrl: string, fileType: FileType) {
@@ -100,6 +91,19 @@ export abstract class LanternEngine {
     lg.logCall([snippetUrl]);
 
     const response = await this.getDeckFromFile(snippetUrl, FileType.webm);
+
+    lg.logReturn(response);
+    return response;
+  }
+
+  static async getDeckFromText(text: string): Promise<Response> {
+    const lg = this.logger.subprocess("getDeckFromText");
+    lg.logCall([text]);
+
+    const response = await this.fetch("/api/deck/create", [
+      [CreateDeckParams.paramNames.mode, CreateDeckMode.text],
+      [CreateDeckParams.paramNames.text, text],
+    ]);
 
     lg.logReturn(response);
     return response;

@@ -18,6 +18,7 @@ export default function OptionsBar({
   screenHeight,
   onPressPaste,
   onPressFile,
+  onPressLive,
 }: {
   isHoveringFile: boolean;
   isStartingShortcut: boolean;
@@ -25,6 +26,7 @@ export default function OptionsBar({
   screenHeight: number;
   onPressPaste: () => void;
   onPressFile: () => void;
+  onPressLive: () => void;
 }) {
   const isMobile = () => {
     return breakpoint == Breakpoint.sm;
@@ -105,9 +107,10 @@ export default function OptionsBar({
         }}
         transition={transition}
       >
-        <Link
-          href="/live"
+        <button
+          type="button"
           className="flex h-full w-full flex-col items-center justify-center gap-1"
+          onClick={onPressLive}
         >
           <Microphone
             size={iconSize}
@@ -115,7 +118,7 @@ export default function OptionsBar({
             weight="regular"
           />
           <p>Record</p>
-        </Link>
+        </button>
       </motion.div>
     </div>
   );

@@ -7,11 +7,15 @@ export async function GET(request: Request) {
   lg.logCall([request]);
 
   const { searchParams } = new URL(request.url);
-
+  lg.log("searchParams");
+  lg.log(searchParams);
   try {
     const deckParams = LighthouseEngine.createDeckParamsFrom(searchParams);
+    lg.log("deckParams");
+    lg.log(deckParams);
     const deck = await LighthouseEngine.handleGetDeckRequest(deckParams);
-
+    lg.log("deck");
+    lg.log(deck);
     return NextResponse.json({ deck: deck.plainObject() }, { status: 200 });
   } catch (error) {
     lg.log("Error: " + (error as Error).message);

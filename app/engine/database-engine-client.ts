@@ -7,6 +7,7 @@ import {
   SupabaseClient,
 } from "@supabase/supabase-js";
 import { Logger } from "./logging-engine";
+import { FileType } from "../model/file-type";
 
 export class SupabaseBrowser {
   static logger = new Logger("SupabaseBrowser");
@@ -43,6 +44,38 @@ export class SupabaseBrowser {
     const session = await supabase.auth.getSession();
     console.log(JSON.stringify(session));
     return session.data.session != null;
+  }
+
+  static async uploadFile(
+    file: Blob | File | ArrayBuffer | FormData,
+    fileType: FileType,
+  ): Promise<string> {
+    const lg = this.logger.subprocess("uploadFile");
+    lg.logCall([file, fileType]);
+
+    const supabase = this.getBrowserClient();
+    
+    // Generate a unique name for the file
+    const chunkName = `${fileType}/`;
+
+    // Upload the file
+    const { data, error } = await supabase.storage
+      .from('audio-chunks')
+      .upload(chunkName, file, {
+        upsert: true,
+      });
+
+    if (error) {
+      lg.log(error);
+      throw error;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from('audio-chunks')
+      .getPublicUrl(data.path);
+
+    lg.logReturn(publicUrlData.publicUrl);
+    return publicUrlData.publicUrl;
   }
 
   static async signUp(

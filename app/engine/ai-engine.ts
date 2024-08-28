@@ -3,10 +3,6 @@ import { OpenAI } from "openai";
 import { openAIKey } from "@/keychain";
 import { ChatCompletion } from "openai/resources/chat/index.mjs";
 import { ReadStream } from "fs";
-import {
-  MessageContentText,
-  ThreadMessage,
-} from "openai/resources/beta/threads/messages/messages.mjs";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { Logger } from "./logging-engine";
 
@@ -80,7 +76,9 @@ export class OpenAIEngine implements AIEngine {
     if (intent.prependMessage) {
       await this.addMessage(intent.prependMessage, thread.id, fileId);
     }
-    await this.addMessage(text, thread.id);
+    if (text != "" && text != undefined && text != null) {
+      await this.addMessage(text, thread.id);
+    }
     if (intent.appendMessage) {
       await this.addMessage(intent.appendMessage, thread.id);
     }
@@ -163,7 +161,7 @@ export class OpenAIEngine implements AIEngine {
       const lastMessageContentElement = lastMessageContent[i];
       lg.log(lastMessageContentElement);
       if (lastMessageContentElement.type == "text") {
-        const textElement = lastMessageContentElement as MessageContentText;
+        const textElement = lastMessageContentElement;
         text += textElement.text.value;
       }
     }
@@ -194,7 +192,7 @@ export class OpenAIEngine implements AIEngine {
     content: string,
     threadId: string,
     fileId?: string,
-  ): Promise<ThreadMessage> {
+  ): Promise<OpenAI.Beta.Threads.Messages.Message> {
     const lg = this.logger.subprocess("addMessage");
     lg.logCall([content, threadId, fileId]);
 
@@ -202,11 +200,26 @@ export class OpenAIEngine implements AIEngine {
     if (fileId != null && fileId != undefined) {
       fileIds.push(fileId);
     }
-    const message = await this.openai.beta.threads.messages.create(threadId, {
+    let params = <any> {
       role: "user",
       content: content,
-      file_ids: fileIds,
-    });
+    }
+    if (fileId != undefined && fileId != null) {
+      params = {
+        ...params,
+        attachments: [
+          {
+            file_id: fileId,
+            tools: [
+              {
+                type: "file_search",
+              },
+            ]
+          }
+        ],
+      }
+    }
+    const message = await this.openai.beta.threads.messages.create(threadId, params);
 
     lg.logReturn(message);
     return message;

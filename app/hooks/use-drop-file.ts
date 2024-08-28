@@ -21,13 +21,20 @@ export function useDropFile(effect: (e: any) => void): [boolean, { enter: (e: Dr
         setIsHoveringFile(true);
       }
 
+      function handleDrop(e: DragEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsHoveringFile(false);
+        effect(e);
+      }
+
       return [
         isHoveringFile,
         {
             enter: handleDragEnter,
             exit: handleDragExit,
             over: handleDragOver,
-            drop: effect
+            drop: handleDrop
         }
       ];
 }
