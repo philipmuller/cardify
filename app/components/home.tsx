@@ -32,17 +32,21 @@ export default function Home() {
     const text = event.clipboardData?.getData('Text');
     console.log("PASTE DETECTED", text);
     if (text) {
-      setIsLoading(true);
-      try {
+      sendText(text);
+    }
+  }, []);
+
+  const sendText = useCallback(async (text: string) => {
+    setIsLoading(true);
+    try {
         const response = await LanternEngine.getDeckFromText(text);
         const json = await response.json();
         const newDeck = json.deck as Deck;
         setDeck(newDeck);
-      } catch (err) {
+    } catch (err) {
         console.error("Failed to process pasted content:", err);
-      } finally {
+    } finally {
         setIsLoading(false);
-      }
     }
   }, []);
 
@@ -67,6 +71,7 @@ export default function Home() {
     const file = e.target.files?.item(0);
     if (!file) return;
 
+    setIsLoading(true);
     uploadSelectedFile(file);
   }
 
@@ -118,7 +123,9 @@ export default function Home() {
             screenHeight={height ?? 100}
             onPressPaste={async () => {
                 const text = await navigator.clipboard.readText();
-                //on phones, this should make a paste icon appear, which then triggers the regular paste detection
+                if (text) {
+                  sendText(text);
+                }
             }}
             onPressFile={() => inputFile.current?.click()}
             onPressLive={() => setLiveView(true)}
