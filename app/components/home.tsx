@@ -57,7 +57,7 @@ export default function Home() {
     console.log("File has been dropped");
     const file = e.dataTransfer.files.item(0);
     if (!file) return;
-    
+
     setIsLoading(true);
     uploadSelectedFile(file);
   }
@@ -116,7 +116,10 @@ export default function Home() {
             isStartingShortcut={isStartingShortcut}
             breakpoint={breakpoint}
             screenHeight={height ?? 100}
-            onPressPaste={() => console.log("PASTE")}
+            onPressPaste={async () => {
+                const text = await navigator.clipboard.readText();
+                //on phones, this should make a paste icon appear, which then triggers the regular paste detection
+            }}
             onPressFile={() => inputFile.current?.click()}
             onPressLive={() => setLiveView(true)}
           />
