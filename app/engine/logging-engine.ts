@@ -1,6 +1,7 @@
 export class Logger {
     static truncateLong: boolean = true;
     static truncateLength: number = 100;
+    static enabled: boolean = false;
 
     processName: string;
 
